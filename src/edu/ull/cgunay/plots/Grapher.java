@@ -431,6 +431,14 @@ abstract public class Grapher  {
 	DataType dataType;
 
 	/**
+	 * Get the DataType value.
+	 * @return the DataType value.
+	 */
+	public DataType getDataType() {
+	    return dataType;
+	}
+
+	/**
 	 * Looks up the name from <code>dataTypes</code>.
 	 *
 	 * @param dataTypeName a <code>String</code> value
@@ -532,24 +540,67 @@ abstract public class Grapher  {
      * For errorbar plots.
      *
      */
-    abstract class ErrorData extends Data {
-	public ErrorData(String label) {
+    public class ErrorData extends Data {
+
+	/**
+	 * Vectors representing values and their corresponding minimum and
+	 * maximum limits.
+	 */
+	Collection values, minValues, maxValues, xAxis;
+
+	public ErrorData(String label, Profile errorValues) {
 	    super("errorbar", label);
+
+	    int size = errorValues.size();
+
+	    xAxis = errorValues.keySet();
+	    values = new Vector(size);
+	    minValues = new Vector(size);
+	    maxValues = new Vector(size);
+
+	    new UninterruptedIteration() {
+		public void job(Object o) {
+		    ErrorValue e = (ErrorValue) o;
+		    values.add(new Double(e.value));
+		    minValues.add(new Double(e.minValue));
+		    maxValues.add(new Double(e.maxValue));
+		}
+	    }.loop(errorValues.values());
+
+	    addVariable("xAxis", xAxis);
+	    addVariable("values", values);
+	    addVariable("minValues", minValues);
+	    addVariable("maxValues", maxValues);
 	}
+
+	public String xExpression() {
+	    return variable("xAxis"); 
+	}
+
+	public String yExpression() {
+	    return variable("values"); 
+	}
+
 
 	/**
 	 * Returns the lower limit expression for each data point.
 	 *
 	 * @return a <code>String</code> value
 	 */
-	abstract public String minExpression();
+	public String minExpression() {
+	    return variable("minValues"); 
+	}
+
 
 	/**
 	 * Returns the upper limit expression for each data point.
 	 *
 	 * @return a <code>String</code> value
 	 */
-	abstract public String maxExpression();
+	public String maxExpression() {
+	    return variable("maxValues"); 
+	}
+
     }
 
     // tools
@@ -650,14 +701,32 @@ abstract public class Grapher  {
     }
 
     /**
-     * Returns a <code>String</code> that parenthesizes the parameter for the <code>Grapher</code>.
-     * By default it is "(a)".
+     * Returns a <code>String</code> that parenthesizes the parameter
+     * for the <code>Grapher</code>.  By default it is "(a)".
      *
      * @param a a <code>String</code> value
      * @return a <code>String</code> value
      */
     public String paren(String a) {
 	return "(" + a + ")";
+    }
+
+    /**
+     * Quotes the given string.
+     *
+     * @param value a <code>String</code> value
+     */
+    public String quote(String value) {
+	return "\"" + value + "\"";
+    }
+
+    /**
+     * Properly terminate a grapher command with end-of-line separator.
+     *
+     * @param line a <code>String</code> value
+     */
+    public String command(String line) {
+	return line + "\n";
     }
 
     /**
