@@ -22,6 +22,7 @@ public class StringTask implements TaskWithReturn {
      *
      */
     protected String retval = "";
+    protected String closing = "";
 
     public StringTask () { }
 
@@ -34,6 +35,18 @@ public class StringTask implements TaskWithReturn {
 	retval = initialRetval;
     }
 
+    /**
+     * Initialize retval and also accept a argument for adding
+     * to retval before returning from getValue()
+     *
+     * @param initialRetval a <code>String</code> value
+     * @param closingAddition a <code>String</code> value
+     */
+    public StringTask (String initialRetval, String closingAddition) {
+	this(initialRetval);
+	closing = closingAddition;
+    }
+
     // implementation of neuroidnet.utils.TaskWithReturn interface
 
     /**
@@ -41,7 +54,7 @@ public class StringTask implements TaskWithReturn {
      * @return <description>
      */
     public Object getValue()   {
-	return retval;
+	return retval + closing;
     }
     // implementation of neuroidnet.utils.Task interface
 
@@ -51,7 +64,7 @@ public class StringTask implements TaskWithReturn {
      * @param o the token of this iteration step
      */
     public void job(Object o) {
-	retval += (String)o;
+	retval += "" + o;
     }
 
     }// StringTask
