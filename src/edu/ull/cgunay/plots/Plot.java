@@ -151,14 +151,15 @@ abstract public class Plot  {
      * Returns a <code>String</code> representation of the plot
      * for the given grapher. Delegates the request to the
      * <code>Grapher</code> instance.
-     *
+     * @deprecated Grapher handles things by directly calling <code>Grapher.plotToString()</code>
+     * and using the <code>PlotHandle</code>
      * @see Grapher#plot(Plot)
      * @see Grapher#plot(SpikePlot)
      * @return a <code>String</code> value
      */
     public String plot(Grapher grapher) {
 	this.grapher = grapher;	
-	return grapher.plot(this);
+	return grapher.plotToString(this);
     }
 
     // Code for delegation of edu.ull.cgunay.utils.plots.Grapher methods to grapher
@@ -170,7 +171,7 @@ abstract public class Plot  {
      * @return <description>
      * @see edu.ull.cgunay.utils.plots.Grapher#add(String, String)
      */
-    String add(String param1, String param2) {
+    protected String add(String param1, String param2) {
 	return grapher.add(param1, param2);
     }
     
@@ -181,7 +182,7 @@ abstract public class Plot  {
      * @return <description>
      * @see edu.ull.cgunay.utils.plots.Grapher#assign(String, String)
      */
-    String assign(String param1, String param2) {
+    protected String assign(String param1, String param2) {
 	return grapher.assign(param1, param2);
     }
     
@@ -192,20 +193,10 @@ abstract public class Plot  {
      * @return <description>
      * @see edu.ull.cgunay.utils.plots.Grapher#profile(Profile, Range)
      */
-    String profile(Profile param1, Range param2) {
+    protected String profile(Profile param1, Range param2) {
 	return grapher.profile(param1, param2);
     }
-    
-    /**
-     *
-     * @param param1 <description>
-     * @return <description>
-     * @see edu.ull.cgunay.utils.plots.Grapher#plot(Plot)
-     */
-    String plot(Plot param1) {
-	return grapher.plot(param1);
-    }
-    
+        
     /**
      *
      * @param param1 <description>
@@ -213,7 +204,7 @@ abstract public class Plot  {
      * @return <description>
      * @see edu.ull.cgunay.utils.plots.Grapher#sub(String, String)
      */
-    String sub(String param1, String param2) {
+    protected String sub(String param1, String param2) {
 	return grapher.sub(param1, param2);
     }
     
@@ -224,7 +215,7 @@ abstract public class Plot  {
      * @return <description>
      * @see edu.ull.cgunay.utils.plots.Grapher#mul(String, String)
      */
-    String mul(String param1, String param2) {
+    protected String mul(String param1, String param2) {
 	return grapher.mul(param1, param2);
     }
 
@@ -235,7 +226,7 @@ abstract public class Plot  {
      * @return <description>
      * @see edu.ull.cgunay.utils.plots.Grapher#geq(String, String)
      */
-    String geq(String param1, String param2) {
+    protected String geq(String param1, String param2) {
 	return grapher.geq(param1, param2);
     }
 
@@ -246,7 +237,7 @@ abstract public class Plot  {
      * @return <description>
      * @see edu.ull.cgunay.utils.plots.Grapher#div(String, String)
      */
-    String div(String param1, String param2) {
+    protected String div(String param1, String param2) {
 	return grapher.div(param1, param2);
     }
     
@@ -256,7 +247,7 @@ abstract public class Plot  {
      * @return <description>
      * @see edu.ull.cgunay.utils.plots.Grapher#neg(String)
      */
-    String neg(String param1) {
+    protected String neg(String param1) {
 	return grapher.neg(param1);
     }
 
@@ -266,7 +257,7 @@ abstract public class Plot  {
      * @return <description>
      * @see edu.ull.cgunay.utils.plots.Grapher#exp(String)
      */
-    String exp(String param1) {
+    protected String exp(String param1) {
 	return grapher.exp(param1);
     }
     
@@ -278,7 +269,7 @@ abstract public class Plot  {
      * @return <description>
      * @see edu.ull.cgunay.utils.plots.Grapher#def_func(String, String[], String)
      */
-    String def_func(String param1, String[] param2, String param3) {
+    protected String def_func(String param1, String[] param2, String param3) {
 	return grapher.def_func(param1, param2, param3);
     }
     
@@ -288,7 +279,7 @@ abstract public class Plot  {
      * @return <description>
      * @see edu.ull.cgunay.utils.plots.Grapher#range(Range)
      */
-    String range(Range param1) {
+    protected String range(Range param1) {
 	return grapher.range(param1);
     }
     
@@ -299,7 +290,7 @@ abstract public class Plot  {
      * @return <description>
      * @see edu.ull.cgunay.utils.plots.Grapher#func(String, String[])
      */
-    String func(String param1, String[] param2) {
+    protected String func(String param1, String[] param2) {
 	return grapher.func(param1, param2);
     }
 
