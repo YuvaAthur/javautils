@@ -118,13 +118,13 @@ abstract public class Iteration implements Task {
      */
     public static void loop(Iterator i, Task t) throws BreakOutOfIterationException {
 	try {
-	    for (; i.hasNext() ;) {
+	    while (i.hasNext()) {
 		try {
 		    t.job(i.next());		     
 		} catch (RemoveFromIterationException e) {
 		    i.remove();
 		} // end of try-catch
-	    } // end of for (; i.hasNext() ;)
+	    } // end of while (i.hasNext())
 	} catch (BreakOutOfIterationException e) {
 	    throw e;
 	} catch (TaskException e) {
