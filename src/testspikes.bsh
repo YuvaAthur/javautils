@@ -1,0 +1,14 @@
+import edu.ull.cgunay.utils.plots.*;
+
+spikes = new Vector();
+
+spikes.add(new Double(1));
+spikes.add(new Double(3));
+spikes.add(new Double(7));
+spikes.add(new Double(7.2));
+spikes.add(new Double(12));
+
+p = new SpikePlot(spikes);
+
+g = new MatLab();
+g.display(p, null);

@@ -1,6 +1,8 @@
 
 package edu.ull.cgunay.utils.plots;
 
+import edu.ull.cgunay.utils.*;
+
 import java.util.*;
 
 // $Id$
@@ -12,11 +14,11 @@ import java.util.*;
  * <p>Created: Mon Apr  8 17:50:01 2002
  * <p>Modified: $Date$
  *
- * @author <a href="mailto:">Cengiz Gunay</a>
+ * @author <a href="mailto:cengiz@ull.edu">Cengiz Gunay</a>
  * @version $Revision$ for this file.
  */
 
-public class SpikePlot extends SimplePlot  {
+public class SpikePlot extends Plot  {
 
     /**
      * Values of the spikes to be plotted.
@@ -57,6 +59,10 @@ public class SpikePlot extends SimplePlot  {
 	
     }
 
+    public SpikePlot(Vector spikes) {
+	this(null, null, spikes);
+    }
+
     /**
      * Not applicable.
      * <p>TODO: Should be '-' to be compliant with multiplot propositions.
@@ -65,5 +71,46 @@ public class SpikePlot extends SimplePlot  {
      * @return a <code>String</code> value
      */
     public String body() { return null; }
+
+    /**
+     * 
+     *
+     * @param grapher a <code>Grapher</code> value
+     * @return a <code>String</code> value
+     */
+    public String recipe(final Grapher grapher) {
+	Grapher.Data data = grapher.new Data("impulse", label) {
+		void init() {
+		    addVariable("spikes", spikes);
+
+		    // Create a equidimension vector with ones
+		    final Vector ones = new Vector(spikes.size());
+		    new UninterruptedIteration() {
+			public void job(Object o) {
+			    ones.add(new Double(1));
+			}
+		    }.loop(spikes);
+		    addVariable("ones", ones);
+		}
+
+		public String xExpression() {
+		    // don't use the delegation methods anymore!
+		    return grapher.variable("spikes"); 
+		}
+
+		public String yExpression() {
+		    return grapher.variable("ones"); 
+		}
+	    };
+
+	Grapher.Axis axis = grapher.createAxis();
+	axis.addData(data);
+	axis.setRange(range);
+
+	axes = new LinkedList();
+	axes.add(axis);
+
+	return /*preamble(grapher) + */axis.getString();
+    }
     
 }// SpikePlot

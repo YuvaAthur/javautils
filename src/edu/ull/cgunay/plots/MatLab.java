@@ -21,26 +21,30 @@ import java.util.*;
  * @see Grapher
  */
 
-public class MatLab extends Grapher  {
+public class MatLab extends Grapher {
     /**
-     * Spawns matlab interpreter and defines datatypes.
+     * Spawns matlab interpreter and defines datatypes. <p>TODO: the
+     * datatypes should anonymously be defined in this constructor for
+     * simplicity rather than being defined as one-time use inner
+     * classes. Doesn't make sense.
      *
      * @exception GrapherNotAvailableException if an error occurs
      * @see Grapher.DataType
      */
-    public MatLab () throws GrapherNotAvailableException {	
+    public MatLab () throws GrapherNotAvailableException {
 	super("matlab");
 	
-	// Define datatypes
+	// Define datatypes (TODO: )
 	new DefaultDataType();
+	new ImpulseDataType();
 	//new DataType("errorbar", "errorbar");
     }
-
+    
     class DefaultDataType extends DataType { 
 	DefaultDataType() {
 	    super("default", "plot");
 	}
-
+	
 	/**
 	 * Process the <code>data</code> for MatLab.
 	 *
@@ -48,11 +52,26 @@ public class MatLab extends Grapher  {
 	 * @return a <code>String</code> value
 	 */
 	public String plotCommand(Data data) {
-	    // for each range variable, declare the range
-	    // for each vector variable initialize a variable
-	    return "plot" + paren( data.xExpression() + ", " + data.yExpression());
+	    return axisCommand + paren( data.xExpression() + ", " + data.yExpression());
 	}
-    }
+	}
+    
+    class ImpulseDataType extends Grapher.DataType {
+	
+	ImpulseDataType() {
+	    super("impulse", "stem");
+	}
+
+	/**
+	 * TODO: Unify this with <code>DefaultDataType</code>.
+	 *
+	 * @param data a <code>Grapher.Data</code> value
+	 * @return a <code>String</code> value
+	 */
+	public String plotCommand(Data data) {
+	    return axisCommand + paren( data.xExpression() + ", " + data.yExpression());
+	}
+	}
 
     /**
      * @see #plotToString(Plot)
@@ -143,6 +162,8 @@ public class MatLab extends Grapher  {
 		return 
 		    new StringTask() {
 			public void job(Object o) {
+			    // for each range variable, declare the range
+			    // for each vector variable initialize a variable
 			    Map.Entry entry = (Map.Entry) o;
 			
 			    if (entry.getValue() instanceof Range) {

@@ -66,6 +66,13 @@ abstract public class Plot implements Serializable, HasAxisLabels {
     }    
 
     /**
+     * The list of axes contained in the plot. TODO: maybe should go
+     * to the <code>grapher</code> dependent part, the
+     * <code>PlotHandle</code>.
+     */
+    List axes;
+
+    /**
      * Plot title.
      */
     String title;
@@ -229,7 +236,7 @@ abstract public class Plot implements Serializable, HasAxisLabels {
      */
     public String plot(Grapher grapher) {
 	this.grapher = grapher;	
-	return grapher.plotToString(this);
+	return grapher.plotToString((SimplePlot)this);
     }
 
     // Code for delegation of edu.ull.cgunay.utils.plots.Grapher methods to grapher
@@ -364,5 +371,14 @@ abstract public class Plot implements Serializable, HasAxisLabels {
 	return grapher.func(param1, param2);
     }
 
+    /**
+     *
+     * @param param1 a <code>String</code> value
+     * @return a <code>String</code> value
+     * @see edu.ull.cgunay.utils.plots.Grapher#variable(String)
+     */
+    protected String variable(String param1) {
+	return grapher.variable(param1);
+    }
 
 }// Plot

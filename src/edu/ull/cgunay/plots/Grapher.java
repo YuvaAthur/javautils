@@ -382,12 +382,13 @@ abstract public class Grapher  {
 	public Data(String dataTypeName, String label) {
 	    this.label = label;
 	    setDataType(dataTypeName);
+	    init();
 	}
 
 	/**
 	 * Put initialization code in this method.
 	 */
-	public void init() {}
+	void init() {}
 
 	/**
 	 * Variables used by this plot data definition. name->Range or
