@@ -1,4 +1,6 @@
 package Utils;
+
+import java.io.*;
 /**
  * Interface to describe a task that takes one argument.
  * @see Task#job
@@ -6,7 +8,7 @@ package Utils;
  * @version 1.0
  * @since 1.0
  */
-public interface Task {
+public interface Task extends Serializable {
     /**
      * Method to be called by external task givers.
      * @see Utils#loop
