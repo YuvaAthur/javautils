@@ -36,7 +36,7 @@ public class ProfilePlot extends Plot  {
      * @return a <code>String</code> value
      */
     public String body() { 
-	return grapher.profile(profile, range); 
+	return profile(profile, range); 
     }
     
 }// ProfilePlot
