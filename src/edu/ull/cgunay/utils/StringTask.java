@@ -42,6 +42,16 @@ public class StringTask implements TaskWithReturn {
     protected String closing = "";
 
     /**
+     * String to be put between elements by default.
+     */
+    protected String separator = "";
+
+    /**
+     * Flag to indicate start of iteration.
+     */
+    protected boolean first = true;
+
+    /**
      * Dummy constructor.
      *
      */
@@ -71,6 +81,20 @@ public class StringTask implements TaskWithReturn {
     public StringTask (String initialRetval, String closingAddition) {
 	this(initialRetval);
 	closing = closingAddition;
+    }
+
+    /**
+     * Also accepts a default separator string to put between
+     * elements.
+     *
+     * @param initialRetval a <code>String</code> value
+     * @param closingAddition a <code>String</code> value
+     * @param separator a <code>String</code> value
+     * @see #StringTask(String,String)
+     */
+    public StringTask (String initialRetval, String closingAddition, String separator) {
+	this(initialRetval, closingAddition);
+	this.separator = separator;
     }
 
     /**
@@ -118,7 +142,8 @@ public class StringTask implements TaskWithReturn {
      * @param o the token of this iteration step
      */
     public void job(Object o) {
-	retval += "" + o;
+	retval += ( first ? "" : separator ) + o;
+	first = false;
     }
 
     }// StringTask
