@@ -11,6 +11,8 @@ import edu.ull.cgunay.utils.*;
  * that represents the visual representation of the plot. It contains pointers to the plot,
  * the grapher, and the associated window number in the grapher.
  *
+ * <p>TODO: maybe just keep axes instead of plots.
+ * 
  * <p>Created: Sun Apr 28 12:54:13 2002
  * <p>Modified: $Date$
  *
