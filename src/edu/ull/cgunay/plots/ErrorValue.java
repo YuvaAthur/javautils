@@ -31,5 +31,9 @@ public class ErrorValue extends Profilable implements Serializable {
     public double doubleValue() {
 	throw new Error("undefined!");
     }
+
+    public String toString() {
+	return value + "(-" + (value - minValue) + "/+" + (maxValue - value) + ")";
+    }
     
 }// ErrorValue
