@@ -106,6 +106,24 @@ public class MatLab extends Grapher {
 	    return dataHandle;
 	}
 
+	String axisHandle;
+
+	/**
+	 * Get the AxisHandle value.
+	 * @return the AxisHandle value.
+	 */
+	public String getAxisHandle() {
+	    return axisHandle;
+	}
+
+	/**
+	 * Set the AxisHandle value.
+	 * @param newAxisHandle The new AxisHandle value.
+	 */
+	public void setAxisHandle(String newAxisHandle) {
+	    this.axisHandle = newAxisHandle;
+	}
+
 	MatLabDataType(String name, String commandName) {
 	    super(name, commandName);
 	}
@@ -269,6 +287,14 @@ public class MatLab extends Grapher {
 			    String dataCommands =
 				getDataPreamble(data) +
 				data.dataType.plotCommand(data);
+			    
+			    // Set the font size if requested
+			    /*if (fontSize != 0) {
+				String[] params = {((MatLabDataType)data.getDataType()).getDataHandle(),
+						   quote("FontSize"), "" + fontSize};
+				dataCommands += command(func("set", params));
+			    }*/
+				
 			    labelString += ( !first ? ", " : "" ) + quote(data.getLabel());
 			    labelHandles +=
 				( !first ? "; " : "" ) +
@@ -358,7 +384,9 @@ public class MatLab extends Grapher {
      */
     String titleString(HasAxisLabels plot) {
 	String title = plot.getTitle();
-	return (title != null) ? command("title" + paren(quote(title))) : "";
+	int fontSize = plot.getFontSize();
+	String setFontSize = (fontSize != 0 ? "," + quote("FontSize") + "," + fontSize : "");
+	return (title != null) ? command("title" + paren(quote(title) + setFontSize)) : "";
     }
 
     /**
@@ -370,7 +398,10 @@ public class MatLab extends Grapher {
      */
     String xLabelString(HasAxisLabels plot) {
 	String label = plot.getXLabel();
-	return (label != null) ? command("xlabel" + paren(quote(label))) : "";
+	int fontSize = plot.getFontSize();
+	String setFontSize = (fontSize != 0 ? "," + quote("FontSize") + "," + fontSize : "");
+	return
+	    (label != null) ? command("xlabel" + paren(quote(label) + setFontSize)) : "";
     }
 
     /**
@@ -382,7 +413,9 @@ public class MatLab extends Grapher {
      */
     String yLabelString(HasAxisLabels plot) {
 	String label = plot.getYLabel();
-	return (label != null) ? command("ylabel" + paren(quote(label))) : "";
+	int fontSize = plot.getFontSize();
+	String setFontSize = (fontSize != 0 ? "," + quote("FontSize") + "," + fontSize : "");
+	return (label != null) ? command("ylabel" + paren(quote(label) + setFontSize)) : "";
     }
 
     /**

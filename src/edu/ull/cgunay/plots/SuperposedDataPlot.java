@@ -73,6 +73,7 @@ public class SuperposedDataPlot extends Plot  {
 		    axis.setTitle(title);
 		    axis.setXLabel(xLabel);
 		    axis.setYLabel(yLabel);
+		    axis.setFontSize(fontSize);
 		}
 
 		public Object getValue() {

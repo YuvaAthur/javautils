@@ -303,6 +303,26 @@ abstract public class Grapher  {
 	    this.yLabel = v;
 	}
 
+	/**
+	 * Font size for plot legends. 0 means default size.
+	 */
+	int fontSize = 0;
+
+	/**
+	 * Get the FontSize value.
+	 * @return the FontSize value.
+	 */
+	public int getFontSize() {
+	    return fontSize;
+	}
+
+	/**
+	 * Set the FontSize value.
+	 * @param newFontSize The new FontSize value.
+	 */
+	public void setFontSize(int newFontSize) {
+	    this.fontSize = newFontSize;
+	}
 
 	/**
 	 * Adds a new dataset to the axis.

@@ -94,6 +94,27 @@ abstract public class Plot implements Serializable, HasAxisLabels {
     }
 
     /**
+     * Font size for plot legends. 0 means default size.
+     */
+    int fontSize = 0;
+
+    /**
+     * Get the FontSize value.
+     * @return the FontSize value.
+     */
+    public int getFontSize() {
+	return fontSize;
+    }
+
+    /**
+     * Set the FontSize value.
+     * @param newFontSize The new FontSize value.
+     */
+    public void setFontSize(int newFontSize) {
+	this.fontSize = newFontSize;
+    }
+
+    /**
      * Give title or label as part of description.
      *
      * @return a <code>String</code> value

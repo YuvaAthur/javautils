@@ -13,4 +13,5 @@ public interface HasAxisLabels {
     String getTitle();
     String getXLabel();
     String getYLabel();
+    int getFontSize();
 }// HasAxisLabels

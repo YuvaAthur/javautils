@@ -50,6 +50,7 @@ public class SingleDataPlot extends Plot  {
 	axis.setTitle(title);
 	axis.setXLabel(xLabel);
 	axis.setYLabel(yLabel);
+	axis.setFontSize(fontSize);
 
 	axes = new LinkedList();
 	axes.add(axis);
