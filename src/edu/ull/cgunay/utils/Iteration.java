@@ -31,16 +31,18 @@ public class Iteration  {
 	} // end of for (; i.hasNext() ;)
     }
 
+    public static void loop(Collection c, Task t) {
+	loop(c.iterator(), t);
+    }
+
     public static void loop(Iterator i, TaskWithParam t, Object[] p) {
 	for (; i.hasNext() ;) {
 	    t.job(i.next(), p);
 	} // end of for (; i.hasNext() ;)
     }
 
-    public static void loop2(AbstractList a, TaskWithParam t, Object[] p) {
-	for (Iterator i = a.iterator(); i.hasNext() ;) {
-	    t.job(i.next(), p);
-	} // end of for (; i.hasNext() ;)
+    public static void loop2(Collection c, TaskWithParam t, Object[] p) {
+	loop(c.iterator(), t, p);
     }
 
 }// Utils
