@@ -1,3 +1,14 @@
+2002-11-17  Cengiz Gunay  <cengiz@ull.edu>
+
+	* utils/Objective.java (Repository): Implemented the stop method,
+	not tested!
+
+	* utils/ParallelTask.java (Repository): Implemented the stop
+	method, not tested!
+
+	* utils/Simulation.java (Repository): Added a stop method for
+	clean-up.
+
 2002-11-15  Cengiz Gunay  <cengiz@ull.edu>
 
 	* utils/plots/MatLab.java (Repository): Can display superposed plot.

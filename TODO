@@ -1,3 +1,4 @@
+- put LGPL license and fix copyright info, rename file to COPYING
 - make Axes and a MultiAxesPlot that takes a list of axis to plot
 - move package plots out from under utils
 - implement everything for gnuplot, too
