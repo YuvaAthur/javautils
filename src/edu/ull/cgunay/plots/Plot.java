@@ -1,5 +1,5 @@
 
-package edu.ull.cgunay.utils.plots;
+package edu.ull.cgunay.plots;
 
 import java.util.*;
 import java.io.*;
@@ -249,14 +249,14 @@ abstract public class Plot implements Serializable, HasAxisLabels {
 	return grapher.plotToString((SimplePlot)this);
     }
 
-    // Code for delegation of edu.ull.cgunay.utils.plots.Grapher methods to grapher
+    // Code for delegation of edu.ull.cgunay.plots.Grapher methods to grapher
     
     /**
      *
      * @param param1 <description>
      * @param param2 <description>
      * @return <description>
-     * @see edu.ull.cgunay.utils.plots.Grapher#add(String, String)
+     * @see edu.ull.cgunay.plots.Grapher#add(String, String)
      */
     protected String add(String param1, String param2) {
 	return grapher.add(param1, param2);
@@ -267,7 +267,7 @@ abstract public class Plot implements Serializable, HasAxisLabels {
      * @param param1 <description>
      * @param param2 <description>
      * @return <description>
-     * @see edu.ull.cgunay.utils.plots.Grapher#assign(String, String)
+     * @see edu.ull.cgunay.plots.Grapher#assign(String, String)
      */
     protected String assign(String param1, String param2) {
 	return grapher.assign(param1, param2);
@@ -278,7 +278,7 @@ abstract public class Plot implements Serializable, HasAxisLabels {
      * @param param1 <description>
      * @param param2 <description>
      * @return <description>
-     * @see edu.ull.cgunay.utils.plots.Grapher#profile(Profile, Range)
+     * @see edu.ull.cgunay.plots.Grapher#profile(Profile, Range)
      */
     protected String profile(Profile param1, Range param2) {
 	return grapher.profile(param1, param2);
@@ -289,7 +289,7 @@ abstract public class Plot implements Serializable, HasAxisLabels {
      * @param param1 <description>
      * @param param2 <description>
      * @return <description>
-     * @see edu.ull.cgunay.utils.plots.Grapher#sub(String, String)
+     * @see edu.ull.cgunay.plots.Grapher#sub(String, String)
      */
     protected String sub(String param1, String param2) {
 	return grapher.sub(param1, param2);
@@ -300,7 +300,7 @@ abstract public class Plot implements Serializable, HasAxisLabels {
      * @param param1 <description>
      * @param param2 <description>
      * @return <description>
-     * @see edu.ull.cgunay.utils.plots.Grapher#mul(String, String)
+     * @see edu.ull.cgunay.plots.Grapher#mul(String, String)
      */
     protected String mul(String param1, String param2) {
 	return grapher.mul(param1, param2);
@@ -311,7 +311,7 @@ abstract public class Plot implements Serializable, HasAxisLabels {
      * @param param1 <description>
      * @param param2 <description>
      * @return <description>
-     * @see edu.ull.cgunay.utils.plots.Grapher#geq(String, String)
+     * @see edu.ull.cgunay.plots.Grapher#geq(String, String)
      */
     protected String geq(String param1, String param2) {
 	return grapher.geq(param1, param2);
@@ -322,7 +322,7 @@ abstract public class Plot implements Serializable, HasAxisLabels {
      * @param param1 <description>
      * @param param2 <description>
      * @return <description>
-     * @see edu.ull.cgunay.utils.plots.Grapher#div(String, String)
+     * @see edu.ull.cgunay.plots.Grapher#div(String, String)
      */
     protected String div(String param1, String param2) {
 	return grapher.div(param1, param2);
@@ -332,7 +332,7 @@ abstract public class Plot implements Serializable, HasAxisLabels {
      *
      * @param param1 <description>
      * @return <description>
-     * @see edu.ull.cgunay.utils.plots.Grapher#neg(String)
+     * @see edu.ull.cgunay.plots.Grapher#neg(String)
      */
     protected String neg(String param1) {
 	return grapher.neg(param1);
@@ -342,7 +342,7 @@ abstract public class Plot implements Serializable, HasAxisLabels {
      *
      * @param param1 <description>
      * @return <description>
-     * @see edu.ull.cgunay.utils.plots.Grapher#exp(String)
+     * @see edu.ull.cgunay.plots.Grapher#exp(String)
      */
     protected String exp(String param1) {
 	return grapher.exp(param1);
@@ -354,7 +354,7 @@ abstract public class Plot implements Serializable, HasAxisLabels {
      * @param param2 <description>
      * @param param3 <description>
      * @return <description>
-     * @see edu.ull.cgunay.utils.plots.Grapher#def_func(String, String[], String)
+     * @see edu.ull.cgunay.plots.Grapher#def_func(String, String[], String)
      */
     protected String def_func(String param1, String[] param2, String param3) {
 	return grapher.def_func(param1, param2, param3);
@@ -364,7 +364,7 @@ abstract public class Plot implements Serializable, HasAxisLabels {
      *
      * @param param1 <description>
      * @return <description>
-     * @see edu.ull.cgunay.utils.plots.Grapher#range(Range)
+     * @see edu.ull.cgunay.plots.Grapher#range(Range)
      */
     protected String range(Range param1) {
 	return grapher.range(param1);
@@ -375,7 +375,7 @@ abstract public class Plot implements Serializable, HasAxisLabels {
      * @param param1 <description>
      * @param param2 <description>
      * @return <description>
-     * @see edu.ull.cgunay.utils.plots.Grapher#func(String, String[])
+     * @see edu.ull.cgunay.plots.Grapher#func(String, String[])
      */
     protected String func(String param1, String[] param2) {
 	return grapher.func(param1, param2);
@@ -385,7 +385,7 @@ abstract public class Plot implements Serializable, HasAxisLabels {
      *
      * @param param1 a <code>String</code> value
      * @return a <code>String</code> value
-     * @see edu.ull.cgunay.utils.plots.Grapher#variable(String)
+     * @see edu.ull.cgunay.plots.Grapher#variable(String)
      */
     protected String variable(String param1) {
 	return grapher.variable(param1);

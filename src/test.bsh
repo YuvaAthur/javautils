@@ -1,4 +1,4 @@
-import edu.ull.cgunay.utils.plots.*;
+import edu.ull.cgunay.plots.*;
 
 prof = new Profile();
 
@@ -9,7 +9,7 @@ prof.put(new Double(4), new ProfilableDouble(3));
 
 p = new ProfilePlot(prof);
 
-if (g == null)
+if (g == null || g == void)
     g = new MatLab();
 
 g.display(p, null);

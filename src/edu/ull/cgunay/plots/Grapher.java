@@ -1,5 +1,5 @@
 
-package edu.ull.cgunay.utils.plots;
+package edu.ull.cgunay.plots;
 
 import edu.ull.cgunay.utils.*;
 

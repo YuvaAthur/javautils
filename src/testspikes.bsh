@@ -1,4 +1,4 @@
-import edu.ull.cgunay.utils.plots.*;
+import edu.ull.cgunay.plots.*;
 
 spikes = new Vector();
 

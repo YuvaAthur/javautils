@@ -1,5 +1,5 @@
 
-package edu.ull.cgunay.utils.plots;
+package edu.ull.cgunay.plots;
 
 import edu.ull.cgunay.utils.*;
 
@@ -33,7 +33,7 @@ public class GNUPlot extends Grapher {
 	out.println("set grid");	// Sets grid mode
     }
 
-    // overriding methods from edu.ull.cgunay.utils.plots.Grapher 
+    // overriding methods from edu.ull.cgunay.plots.Grapher 
 
     /**
      */

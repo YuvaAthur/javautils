@@ -1,4 +1,4 @@
-import edu.ull.cgunay.utils.plots.*;
+import edu.ull.cgunay.plots.*;
 
 prof = new Profile();
 prof.put(new Double(1), new ErrorValue(2,1,4));

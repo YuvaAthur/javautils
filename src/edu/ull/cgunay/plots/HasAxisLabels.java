@@ -1,4 +1,4 @@
-package edu.ull.cgunay.utils.plots;
+package edu.ull.cgunay.plots;
 
 /**
  * Features methods to access axis labels.
