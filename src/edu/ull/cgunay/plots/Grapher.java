@@ -42,6 +42,28 @@ abstract public class Grapher  {
     BufferedReader grapherMsg, grapherErr;
 
     /**
+     * Number of points on the graph, default is 100.
+     *
+     */
+    int points = 100;
+    
+    /**
+     * Get the value of points.
+     * @return value of points.
+     */
+    public int getPoints() {
+	return points;
+    }
+    
+    /**
+     * Set the value of points.
+     * @param v  Value to assign to points.
+     */
+    public void setPoints(int  v) {
+	this.points = v;
+    }
+
+    /**
      * Spawns a grapher process (used from subclasses).
      *
      * @param processName the string to be executed
@@ -77,7 +99,7 @@ abstract public class Grapher  {
 
 		public void job(Object o) {
 		    Map.Entry entry = (Map.Entry)o;
-		    double val = ((Double)entry.getValue()).doubleValue();
+		    double val = ((Profilable)entry.getValue()).doubleValue();
 		    
 		    retval = add(retval, mul("(t>=" + entry.getKey() + ")", "" + (val-lastval)));
 		    lastval = val;
@@ -98,6 +120,27 @@ abstract public class Grapher  {
     public String plot(Plot plot) {
 	throw new Error("This function should not be called");
     }
+
+    /**
+     * @see #multiPlot(String,Collection)
+     * @param title a <code>String</code> value
+     * @param plots a <code>Plot[]</code> value
+     * @return a <code>String</code> value
+     */
+    public String multiPlot(String title, Plot[] plots) {
+	return multiPlot(title, Arrays.asList(plots));
+    }
+
+    /**
+     * Multiple plots in the same window, arranged one on top of the other.
+     * Implemented separately for each grapher.
+     * @see GNUPlot#multiPlot
+     * @see MatLab#multiPlot
+     * @param title a <code>String</code> value
+     * @param plots a <code>Collection</code> value
+     * @return a <code>String</code> value
+     */
+    abstract public String multiPlot(String title, Collection plots);
 
     /**
      * Returns a <code>String</code> representation of a spike
