@@ -6,6 +6,7 @@ import java.io.*;
 import edu.ull.cgunay.utils.*;
 
 // $Id$
+// See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
  * Grapher independent description for plots. The plot is converted to 
  * a grapher specific String representation when the <code>plot(Grapher)</code> method 
@@ -32,7 +33,7 @@ import edu.ull.cgunay.utils.*;
  * <p>Created: Mon Apr  8 17:35:11 2002
  * <p>Modified: $Date$
  *
- * @author <a href="mailto:">Cengiz Gunay</a>
+ * @author <a href="mailto:cengiz@ull.edu">Cengiz Gunay</a>
  * @version $Revision$ for this file.
  * @see #plot(Grapher)
  * @see #preamble
@@ -40,7 +41,7 @@ import edu.ull.cgunay.utils.*;
  * @see #range
  * @see Grapher
  */
-abstract public class Plot implements Serializable {
+abstract public class Plot implements Serializable, HasAxisLabels {
 
     /**
      * <code>Grapher</code> instance associated with the plot (if available).
@@ -208,45 +209,17 @@ abstract public class Plot implements Serializable {
     }
 
     /**
-     * Returns body that appears inside the plot command for the specific plot.
+     * A new way to describe plots in terms of <code>Grapher</code>
+     * capabilities.
      *
-     * @return a <code>String</code> value
-     */
-    abstract public String body();
-
-    /**
-     * Helper function to set grapher before calling body.
-     * @see MembranePotentialPlot
      * @param grapher a <code>Grapher</code> value
      * @return a <code>String</code> value
      */
-    public String body(Grapher grapher) {
-	this.grapher = grapher;
-	return body();
-    }
-
-    /**
-     * Returns a preamble to appear before the plot command. 
-     * By default returns empty string.
-     * 
-     * @return a <code>String</code> value
-     */
-    public String preamble() { return ""; }
-
-    /**
-     * Returns a preamble to appear before the plot command. 
-     * By default returns empty string.
-     * 
-     * @return a <code>String</code> value
-     */
-    public String preamble(Grapher grapher) {
-	this.grapher = grapher;
-	return preamble();
-    }
+    abstract public String recipe(final Grapher grapher);
     
     /**
-     * Returns a <code>String</code> representation of the plot
-     * for the given grapher. Delegates the request to the
+     * Returns a <code>String</code> representation of the plot for
+     * the given grapher. Delegates the request to the
      * <code>Grapher</code> instance.
      * @deprecated Grapher handles things by directly calling <code>Grapher.plotToString()</code>
      * and using the <code>PlotHandle</code>

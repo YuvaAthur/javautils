@@ -7,6 +7,7 @@ import java.io.*;
 import java.util.*;
 
 // $Id$
+// See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
  * <p>Represents the active Grapher process and its capabilities. The methods
  * defined in this class are generic or abstract if it is not possible to generalize them. 
@@ -25,8 +26,8 @@ import java.util.*;
  * <p>Created: Mon Apr  8 17:12:23 2002
  * <p>Modified: $Date$
  *
- * @author <a href="mailto:">Cengiz Gunay</a>
- * @version $Revision$ for this file.
+ * @author <a href="mailto:cengiz@ull.edu">Cengiz Gunay</a>
+ * @version v2.0, and $Revision$ for this file.
  * @see Plot
  */
 
@@ -141,7 +142,7 @@ abstract public class Grapher  {
      * @return a <code>String</code> value
      * @see Plot#body
      */
-    abstract public String plotToString(Plot plot);/* {
+    abstract public String plotToString(SimplePlot plot);/* {
 	throw new Error("This method is only defined in subclasses!");
     }*/
 
@@ -155,8 +156,16 @@ abstract public class Grapher  {
     abstract public String plotToString(SpikePlot plot); 
 
     /**
-     * @param title a <code>String</code> value
+     * When defined, should call <code>plot.recipe</code>.
+     *
+     * @param plot a <code>Plot</code> value
+     * @return a <code>String</code> value
+     */
+    abstract public String plotToStringAlt(Plot plot);
+
+    /**
      * @param plots a <code>Plot[]</code> value
+     * @param out a <code>PrintStream</code> value
      * @return a <code>String</code> value
      * @see #multiPlot(Collection,PrintStream)
      */
@@ -167,8 +176,8 @@ abstract public class Grapher  {
     /**
      * Multiple plots in the same window, arranged one on top of the other with same range.
      * Implemented separately for each grapher.
-     * @param title a <code>String</code> value
      * @param plots a <code>Collection</code> value
+     * @param out a <code>PrintStream</code> value
      * @return a <code>String</code> value
      * @see GNUPlot#multiPlot
      * @see MatLab#multiPlot
@@ -199,18 +208,336 @@ abstract public class Grapher  {
     abstract public PlotHandle superposedPlot(final String title, Collection plots,
 					      final PrintStream out);
 
-  abstract class Axis {
+    /**
+     * Factory method fro creating <code>Axis</code> instances. 
+     *
+     * @return an <code>Axis</code> subclass instance for the given grapher.
+     */
+    abstract public Axis createAxis();
+
+    /**
+     * An object that represent a data axis for the grapher. Describes
+     * how to form a graph axis for specific <code>Grapher</code>. To be
+     * instantiated by the <code>Grapher</code>.
+     */
+    abstract protected class Axis extends LinkedList implements HasAxisLabels {
+	Range range;
+	
+	/**
+	 * Get the value of range.
+	 * @return value of range.
+	 */
+	public Range getRange() {
+	    return range;
+	}
+	
+	/**
+	 * Set the value of range.
+	 * @param v  Value to assign to range.
+	 */
+	public void setRange(Range  v) {
+	    this.range = v;
+	}
+
+	/**
+	 * Plot title.
+	 */
+	String title;
     
-    abstract void addData(Data data);
+	/**
+	 * Get the value of title.
+	 * @return value of title.
+	 */
+	public String getTitle() {
+	    return title;
+	}
+    
+	/**
+	 * Set the value of title.
+	 * @param v  Value to assign to title.
+	 */
+	public void setTitle(String  v) {
+	    this.title = v;
+	}
 
-    abstract String getString();
-  }
+	
+	/**
+	 * Label for the x-axis.
+	 */
+	String xLabel;
+    
+	/**
+	 * Get the value of xLabel.
+	 * @return value of xLabel.
+	 */
+	public String getXLabel() {
+	    return xLabel;
+	}
+    
+	/**
+	 * Set the value of xLabel.
+	 * @param v  Value to assign to xLabel.
+	 */
+	public void setXLabel(String  v) {
+	    this.xLabel = v;
+	}
 
-  abstract class Data {
-    abstract String body();
-  }
+	/**
+	 * Label for the y-axis.
+	 */
+	String yLabel;
+    
+	/**
+	 * Get the value of yLabel.
+	 * @return value of yLabel.
+	 */
+	public String getYLabel() {
+	    return yLabel;
+	}
+    
+	/**
+	 * Set the value of yLabel.
+	 * @param v  Value to assign to yLabel.
+	 */
+	public void setYLabel(String  v) {
+	    this.yLabel = v;
+	}
+
+
+	/**
+	 * Adds a new dataset to the axis.
+	 *
+	 * @param data a <code>Data</code> value
+	 */
+	void addData(Data data) {
+	    this.add(data);
+	}
+
+	/**
+	 * Grapher specific code for generating the axis with the
+	 * given data sets. For each <code>data</code> instantiate all
+	 * <code>variables</code>.
+	 *
+	 * @return a <code>String</code> value
+	 */
+	abstract String getString();
+    }
+
+    /**
+     * Hash to hold name->datatype values for a grapher.
+     */
+    protected Hashtable dataTypes = new Hashtable();
+
+    /**
+     * Type of representation for the data. That is spikes, lines,
+     * errorbars, etc. To be instantiated by the <code>Grapher</code>
+     * as representing its capabilities.
+     */
+    abstract protected class DataType {
+	String name;
+
+	/**
+	 * Adds itself to the <code>dataTypes</code> hash.
+	 *
+	 * @param name key for the datatype
+	 */
+	DataType(String name, String axisCommand) {
+	    this.name = name;
+	    this.axisCommand = axisCommand;
+	    dataTypes.put(name, this);
+	}
+
+	/**
+	 * Command to realize axis in grapher, i.e. "stem", "plot", etc.
+	 */
+	String axisCommand;
+	    
+	/**
+	 * Maybe for additional properties? Used by <code>body()</code>.
+	 * @see Grapher.Data#body
+	 */
+	String propertyName;
+
+	/**
+	 * Generates the plot command for the grapher for given data.
+	 *
+	 * @param data a <code>Data</code> value
+	 * @return a <code>String</code> value
+	 */
+	abstract public String plotCommand(Data data);
+    }
+
+    /**
+     * Each dataset that can be added to an <code>Axis</code>. To be
+     * instantiated by the <code>Plot</code>.
+     */
+    abstract class Data {
+	/**
+	 * Finds the <code>DataType</code> associated with requested
+	 * <code>dataTypeName</code>.
+	 *
+	 * @param dataTypeName a <code>String</code> value
+	 * @param label a <code>String</code> value
+	 */
+	public Data(String dataTypeName, String label) {
+	    this.label = label;
+	    setDataType(dataTypeName);
+	}
+
+	/**
+	 * Put initialization code in this method.
+	 */
+	public void init() {}
+
+	/**
+	 * Variables used by this plot data definition. name->Range or
+	 * name->vector pairs.
+	 */
+	Hashtable variables = new Hashtable();
+
+	/**
+	 * Get the Variables value.
+	 * @return the Variables value.
+	 */
+	public Hashtable getVariables() {
+	    return variables;
+	}
+
+	/**
+	 * Add a range variable to <code>variables</code>.
+	 *
+	 * @param name a <code>String</code> value
+	 * @param range a <code>Range</code> value
+	 * @see #variables
+	 */
+	public void addVariable(String name, Range range) {
+	    variables.put(name, range);
+	}
+
+	/**
+	 * Add a vector variable to <code>variables</code>.
+	 *
+	 * @param name a <code>String</code> value
+	 * @param range a <code>Range</code> value
+	 * @see #variables
+	 */
+	public void addVariable(String name, Vector vector) {
+	    variables.put(name, vector);
+	}
+
+	DataType dataType;
+
+	/**
+	 * Looks up the name from <code>dataTypes</code>.
+	 *
+	 * @param dataTypeName a <code>String</code> value
+	 */
+	public void setDataType(String dataTypeName) {
+	    dataType = (DataType) dataTypes.get(dataTypeName);
+	    if (dataType == null) 
+		throw new RuntimeException("Datatype " + dataTypeName + " is not found in " +
+					   Grapher.this + ". Not supported or wrong type name. " +
+					   "Available types: " + dataTypes.keySet());
+	}
+
+	/**
+	 * Legend label for the data.
+	 */
+	String label;
+	
+	/**
+	 * Get the value of label.
+	 * @return value of label.
+	 */
+	public String getLabel() {
+	    return label;
+	}
+	
+	/**
+	 * Set the value of label.
+	 * @param v  Value to assign to label.
+	 */
+	public void setLabel(String  v) {
+	    this.label = v;
+	}
+
+	/**
+	 * Expression to appear on the x-axis part of the plot
+	 * command. Description should be in terms of the variables
+	 * here and capabilities of the <code>Grapher</code>.
+	 *
+	 * @return a <code>String</code> value
+	 */
+	abstract public String xExpression();
+
+	/**
+	 * Expression to appear on the x-axis part of the plot
+	 * command. Description should be in terms of the variables
+	 * here and capabilities of the <code>Grapher</code>.
+	 *
+	 * @return a <code>String</code> value
+	 * @see #variables
+	 */
+	abstract public String yExpression();
+    }
+
+    /**
+     * Data fitted for generating plots for profiles. Assumes time for
+     * the x-axis.
+     * @see Profile
+     */
+    abstract class ProfileData extends Data {
+	public ProfileData(String dataTypeName, String label) {
+	    super(dataTypeName,label);
+	}
+
+	Range range;
+	
+	/**
+	 * Get the value of range.
+	 * @return value of range.
+	 */
+	public Range getRange() {
+	    return range;
+	}
+	
+	/**
+	 * Set the value of range.
+	 * @param v  Value to assign to range.
+	 */
+	public void setRange(Range  v) {
+	    this.range = v;
+	    addVariable("t", range);
+	}
+
+	/*void init() {
+	    
+	}*/
+
+	/**
+	 * Currently just returns the variable "t" being the default
+	 * range variable. Need to put that in the hashtable.
+	 *
+	 * @return a <code>String</code> value
+	 */
+	public String xExpression() {
+	    return variable("t");
+	}
+    }
 
     // tools
+
+    /**
+     * Returns a <code>String</code> that represents the given
+     * variable for the <code>Grapher</code>.  By default it is
+     * "name".
+     *
+     * @param name a <code>String</code> value
+     * @return a <code>String</code> value
+     */
+    String variable(String name) {
+	return name;
+    }
 
     /**
      * Returns a <code>String</code> that adds two parameters for the <code>Grapher</code>.
@@ -364,6 +691,8 @@ abstract public class Grapher  {
      * Displays the plot generated from the given plot description. 
      * <p>TODO: Should return the PlotHandle and call directly Grapher.plot(Plot)
      * @param plot a <code>Plot</code> value
+     * @param out a <code>PrintStream</code> for displaying <code>grapher</code>
+     * response. If <code>null</code>, <code>System.out</code> is used.
      * @return The response from the grapher
      * @see Plot#plot(Grapher)
      */
@@ -378,7 +707,7 @@ abstract public class Grapher  {
 	// Bad bad hack.. shame on java's incapability of polymorphism
 	String plotStr =
 	    (plot instanceof SpikePlot) ?
-	    plotToString((SpikePlot)plot) : plotToString(plot);
+	    plotToString((SpikePlot)plot) : plotToStringAlt(plot);
 	    
 	this.out.println(plotStr);
 
@@ -425,9 +754,8 @@ abstract public class Grapher  {
 
 
     /**
-     * Wait until a response comes from either the output or error streams of the process.
-     *
-     * @exception GrapherNotAvailableException if an error occurs
+     * Wait until a response comes from either the output or error
+     * streams of the process.
      */
     synchronized public void waitForResponse() {
 	int
