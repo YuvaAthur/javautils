@@ -1,0 +1,11 @@
+2002-04-29  Cengiz Gunay  <cengiz@ull.edu>
+
+	* utils/Iteration.java (Repository): All functions throw BreakOutOfIterationException
+	see new class UninterruptedIteration for old behavior of Iteration.
+
+	* utils/plots (Repository): Moved files from neuroidnet.ntr.plots and changed 
+	the package names and added documentation for distributing to colleagues and others.
+
+	* utils (Repository): Moved files from neuroidnet.utils and changed the package names 
+	and added documentation for distributing to colleagues and others.
+
