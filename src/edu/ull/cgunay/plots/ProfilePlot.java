@@ -37,9 +37,9 @@ public class ProfilePlot extends Plot  {
      * @see Grapher#profile
      * @return a <code>String</code> value
      */
-    public String body(Grapher grapher) { 
+    /*public String body(Grapher grapher) { 
 	return grapher.profile(profile, range); 
-    }
+    }*/
 
     /**
      * Create a <code>ProfileData</code> object, and send to the <code>Axis</code>.
@@ -48,13 +48,7 @@ public class ProfilePlot extends Plot  {
      * @return a <code>String</code> value
      */
     public String recipe(final Grapher grapher) {
-	Grapher.ProfileData data = grapher.new ProfileData("default", label) {
-		public String yExpression() {
-		    /* SHOULD BE: "Grapher.this" instead of "grapher",
-		     * but Java is buggy! */
-		    return ProfilePlot.this.body(grapher); 
-		}
-	    };
+	Grapher.ProfileData data = grapher.new ProfileData(label, profile, range);
 
 	data.setRange(range);
 

@@ -513,15 +513,54 @@ abstract public class Grapher  {
     }
 
     /**
-     * Data fitted for generating plots for profiles. Assumes time for
-     * the x-axis.
+     * Data structure for generating profile plots. It makes a precise
+     * plot, in the sense that a point is drawn for every data in the
+     * profile. if you like to specify the resolution of the plot with
+     * a general number of data points selection, see
+     * <code>ProfileData</code>.
      * @see Profile
+     * @see ProfileData
      */
-    abstract class ProfileData extends Data {
-	public ProfileData(String dataTypeName, String label) {
-	    super(dataTypeName,label);
+    public class PreciseProfileData extends Data {
+
+	/**
+	 * Vectors representing values and their corresponding minimum and
+	 * maximum limits.
+	 */
+	Collection values, xAxis;
+
+	public PreciseProfileData(String label, Profile profile) {
+	    this(label, profile, null);
 	}
 
+	/**
+	 * Creates a new <code>PreciseProfileData</code> instance.
+	 *
+	 * @param label a <code>String</code> value
+	 * @param profile a <code>Profile</code> value
+	 * @param range a <code>Range</code> value
+	 */
+	public PreciseProfileData(String label, Profile profile, Range range) {
+	    super("default", label);
+
+	    this.range = range;
+
+	    xAxis = profile.keySet();
+
+	    new UninterruptedIteration() {
+		public void job(Object o) {
+		    Map.Entry e = (Map.Entry) o;
+		    values.add(new Double(((ProfilableDouble)e.getValue()).doubleValue()));
+		}
+	    }.loop(profile.collection(range));
+	    
+	    addVariable("xAxis", xAxis);
+	    addVariable("values", values);
+	}
+
+	/**
+	 * Range to draw the plot. If <code>null</code>, takes all data points.
+	 */
 	Range range;
 	
 	/**
@@ -541,9 +580,57 @@ abstract public class Grapher  {
 	    addVariable("t", range);
 	}
 
-	/*void init() {
-	    
-	}*/
+	/**
+	 * @return a <code>String</code> value
+	 */
+	public String xExpression() {
+	    return variable("xAxis");
+	}
+
+	public String yExpression() {
+	    return variable("values"); 
+	}
+    }
+
+    /**
+     * Data structure for generating profile plots, where the
+     * precision can be defined as the total number of points on the
+     * plot. This allows optimal use of resources for complex data.
+     * @see PreciseProfileData
+     */
+    public class ProfileData extends Data {
+
+	Profile profile;
+
+	public ProfileData(String label, Profile profile, Range range) {
+	    super("default", label);
+
+	    this.range = range;
+	    this.profile = profile;
+	}
+
+	/**
+	 * Range to draw the plot. If <code>null</code>, takes all data points.
+	 */
+	Range range;
+
+	/**
+	 * Get the value of range.
+	 * @return value of range.
+	 */
+	public Range getRange() {
+	    return range;
+	}
+	
+	/**
+	 * Set the value of range.
+	 * @param v  Value to assign to range.
+	 */
+	public void setRange(Range  v) {
+	    this.range = v;
+	    addVariable("t", range);
+	}
+
 
 	/**
 	 * Currently just returns the variable "t" being the default
@@ -553,6 +640,12 @@ abstract public class Grapher  {
 	 */
 	public String xExpression() {
 	    return variable("t");
+	}
+
+	public String yExpression() {
+	    /* SHOULD BE: "Grapher.this" instead of "grapher",
+	     * but Java is buggy! */
+	    return profile(profile, range); 
 	}
     }
 
