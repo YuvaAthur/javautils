@@ -85,6 +85,18 @@ public class StringTask implements TaskWithReturn {
 	return (String)getValue(); 
     }
 
+    /**
+     * Convenience method, see other <code>getString</code>s.
+     *
+     * @param array an <code>Object[]</code> value
+     * @return a <code>String</code> value
+     * @see #getString(Collection)
+     */
+    public String getString(Object[] array) {
+	UninterruptedIteration.loop(array, this);
+	return (String)getValue(); 
+    }
+
     // implementation of edu.ull.cgunay.utils.TaskWithReturn interface
 
     /**

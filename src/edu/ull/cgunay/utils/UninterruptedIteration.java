@@ -37,6 +37,16 @@ abstract public class UninterruptedIteration extends Iteration  {
 	} // end of try-catch	
     }
 
+    /**
+     * Convenience method with <code>Collection</code> parameter, calls another
+     * <code>loop()</code> method.
+     *
+     * @param array an <code>Object[]</code> value
+     */
+    public void loop(Object[] array) {
+	loop(array, this);
+    }
+
     static public void loop(Collection c, Task t) {
 	loop(c.iterator(), t);
     }

@@ -160,6 +160,17 @@ abstract public class Iteration implements Task {
      * Convenience method with <code>Collection</code> parameter, calls another
      * <code>loop()</code> method.
      *
+     * @param array an <code>Object[]</code> value
+     * @exception BreakOutOfIterationException if an error occurs
+     */
+    public void loop(Object[] array) throws BreakOutOfIterationException {
+	loop(array, this);
+    }
+
+    /**
+     * Convenience method with <code>Collection</code> parameter, calls another
+     * <code>loop()</code> method.
+     *
      * @param c a <code>Collection</code> value
      * @param t a <code>Task</code> value
      * @exception BreakOutOfIterationException if received from given <code>Task</code> instance
