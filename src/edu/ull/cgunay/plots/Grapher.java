@@ -1,24 +1,33 @@
 
-package neuroidnet.ntr.plots;
+package edu.ull.cgunay.utils.plots;
 
-import neuroidnet.utils.*;
+import edu.ull.cgunay.utils.*;
 
 import java.io.*;
 import java.util.*;
 
 // $Id$
 /**
- * Returns string representations for various operations according to the
+ * <p>Represents the active Grapher process and its capabilities. The methods
+ * defined in this class are generic or abstract if it is not possible to generalize them. 
+ * 
+ * <p>Returns string representations for various operations according to the
  * grapher platform. Each of the classes extending this class 
- * specifies a such platform.
- *
+ * specifies such a platform.
+ * 
+ * <p>In order to create a plot the usage is as follows:
+ * <code><blockquote>
+ * Grapher g = new ...();<br>
+ * Plot p = new ...();<br>
+ * g.display(p);
+ * </blockquote> </code>
  *
  * <p>Created: Mon Apr  8 17:12:23 2002
  * <p>Modified: $Date$
  *
- * @see GNUPlot
  * @author <a href="mailto:">Cengiz Gunay</a>
  * @version $Revision$ for this file.
+ * @see Plot
  */
 
 abstract public class Grapher  {
@@ -37,9 +46,14 @@ abstract public class Grapher  {
     public PrintWriter grapherOut;
 
     /**
-     * Output streams of the grapher process.
+     * Reader of the output stream of the grapher process.
      */
-    BufferedReader grapherMsg, grapherErr;
+    BufferedReader grapherMsg;
+
+    /**
+     * Reader of the error stream of the grapher process.
+     */
+    BufferedReader grapherErr;
 
     /**
      * Number of points on the graph, default is 100.
@@ -93,14 +107,17 @@ abstract public class Grapher  {
      * a given <code>Range</code>. Most of the time it should be in the form of
      * ((t>t1)*v1 + (t>t2)*(v2-v1) + ... ) where t is the variable denoting time,
      * and (t1,v1) is a pair found in the profile. See specific implementations for 
-     * more information.
+     * more information. It is an error if the <code>Profilable</code> entity does not
+     * meaningfully define its <code>doubleValue()</code> method, that is converted
+     * to a simple <code>double</code> value.
      *
      * @param profile a <code>Profile</code> value
      * @param range a <code>Range</code> value
      * @return a <code>String</code> value
+     * @see Profilable#doubleValue
      */
     public String profile(Profile profile, Range range) {
-	TaskWithReturn profileTask = new StringTask("0") {
+	return paren(new StringTask("0") {
 		double lastval = 0;
 
 		public void job(Object o) {
@@ -110,28 +127,25 @@ abstract public class Grapher  {
 		    retval = add(retval, mul(geq("t", "" + entry.getKey()), "" + (val-lastval)));
 		    lastval = val;
 		}
-	    };
-
-	Iteration.loop(profile.iterator(range), profileTask);
-
-	return paren((String)profileTask.getValue());
+	    }.getString(profile.collection(range)));
     }
 
     /**
      * Generic plot that calls <code>Plot.body()</code> as the body.
-     * @see Plot#body
+     * Needs to be redefined in subclasses and it is an error to call this function here.
      * @param plot a <code>Plot</code> value
      * @return a <code>String</code> value
+     * @see Plot#body
      */
     public String plot(Plot plot) {
 	throw new Error("This function should not be called");
     }
 
     /**
-     * @see #multiPlot(String,Collection)
      * @param title a <code>String</code> value
      * @param plots a <code>Plot[]</code> value
      * @return a <code>String</code> value
+     * @see #multiPlot(String,Collection)
      */
     public String multiPlot(String title, Plot[] plots) {
 	return multiPlot(title, Arrays.asList(plots));
@@ -140,20 +154,20 @@ abstract public class Grapher  {
     /**
      * Multiple plots in the same window, arranged one on top of the other.
      * Implemented separately for each grapher.
-     * @see GNUPlot#multiPlot
-     * @see MatLab#multiPlot
      * @param title a <code>String</code> value
      * @param plots a <code>Collection</code> value
      * @return a <code>String</code> value
+     * @see GNUPlot#multiPlot
+     * @see MatLab#multiPlot
      */
     abstract public String multiPlot(String title, Collection plots);
 
     /**
      * Returns a <code>String</code> representation of a spike
      * plot for the <code>Grapher</code>.
-     * @see GNUPlot#plot(SpikePlot)
      * @param plot a <code>SpikePlot</code> value
      * @return a <code>String</code> value
+     * @see GNUPlot#plot(SpikePlot)
      */
     abstract public String plot(SpikePlot plot); 
 
@@ -296,27 +310,21 @@ abstract public class Grapher  {
      * @return a <code>String</code> value
      */
     public String func(String name, String[] params) {
-	String retval = name + "(";
-
-	TaskWithReturn funcTask = new StringTask() {
+	return new StringTask(name + "(", ")") {
 		public void job(Object o) {
 		    if (!this.retval.equals("")) 
 			this.retval += ", ";
 		    super.job(o);
 		}
-	    };
-
-	Iteration.loop(Arrays.asList(params), funcTask);
-
-	retval += (String) funcTask.getValue() + ")";
-	
-	return retval;
+	    }.getString(Arrays.asList(params));
     }
 
     /**
-     * Displays the plot returned from a plot command. 
+     * Displays the plot generated from the given plot description. 
+     * @param plot a <code>Plot</code> value
+     * @return The response from the grapher
      * @exception GrapherNotAvailableException if the grapher is not available
-     * @param grapherStr a <code>String</code> value
+     * @see Plot#plot(Grapher)
      */
     public String display(Plot plot) throws GrapherNotAvailableException {
 	if (grapherOut == null) 
@@ -332,6 +340,7 @@ abstract public class Grapher  {
     /**
      * Sets the current plot window according to grapher platform.
      *
+     * @param windowNumber an <code>int</code> value
      */
     abstract public void setWindow(int windowNumber);
 
@@ -339,6 +348,7 @@ abstract public class Grapher  {
      * Returns the standard and error outputs of the process if available.
      *
      * @return a <code>String</code> value
+     * @exception GrapherNotAvailableException if the grapher is not available
      */
     public String response() throws GrapherNotAvailableException {
 	String retval = "";

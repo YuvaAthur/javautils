@@ -1,15 +1,16 @@
 
-package neuroidnet.ntr.plots;
+package edu.ull.cgunay.utils.plots;
 
-import neuroidnet.utils.*;
+import edu.ull.cgunay.utils.*;
 
 import java.io.*;
 import java.util.*;
 
 // $Id$
 /**
- * <code>Grapher</code> implementation for the plotting with the
+ * <code>Grapher</code> implementation for plotting with the
  * <code>gnuplot</code> program.
+ * <p>See description in <code>Grapher</code> for the usage.
  *
  *
  * <p>Created: Mon Apr  8 17:53:58 2002
@@ -17,6 +18,7 @@ import java.util.*;
  *
  * @author <a href="mailto:">Cengiz Gunay</a>
  * @version $Revision$ for this file.
+ * @see Grapher
  */
 
 public class GNUPlot extends Grapher {
@@ -29,18 +31,17 @@ public class GNUPlot extends Grapher {
 	super("gnuplot -display :0 -");
     }
 
-    // overriding methods from neuroidnet.ntr.plots.Grapher 
+    // overriding methods from edu.ull.cgunay.utils.plots.Grapher 
 
     /**
      */
     public String plot(final SpikePlot plot) {
 	Range range = plot.getRange();
 
-	String retval =
+	return
 	    "plot " + ((range!=null) ? "[" + assign("x", range(range)) + "] " : "") +
-	    "'-'" + getTitle(plot) + " with impulses" + "\n";
-
-	TaskWithReturn stringTask = new StringTask() {
+	    "'-'" + getTitle(plot) + " with impulses" + "\n" +
+	    new StringTask("", "EOF\n") {
 		Range range = plot.getRange();
 
 		public void job(Object o) {
@@ -49,11 +50,7 @@ public class GNUPlot extends Grapher {
 			super.job(time + " 1\n"); 
 		    } // end of if 
 		}
-	    };
-
-	Iteration.loop(plot.getSpikes(), stringTask);
-
-	return retval + stringTask.getValue() + "EOF\n";
+	    }.getString(plot.getSpikes());
     }
 
     /**
@@ -76,6 +73,13 @@ public class GNUPlot extends Grapher {
 	return (title != null) ? " title \"" + title + "\"" : "";
     }
 
+    /**
+     * Not implemented yet!
+     *
+     * @param title a <code>String</code> value
+     * @param plots a <code>Collection</code> value
+     * @return a <code>String</code> value
+     */
     public String multiPlot(String title, Collection plots) {
 	// set title
 	// go into multiplot mode
@@ -87,11 +91,16 @@ public class GNUPlot extends Grapher {
     }
     
     /**
+     * gnuplot style function definition.
      */
     public String def_func(String name, String[] params, String body) {
 	return func(name, params) + "=" + body + "\n";
     }
 
+    /**
+     * Exits from gnuplot.
+     *
+     */
     public void close() {
 	grapherOut.println("exit");
     }
