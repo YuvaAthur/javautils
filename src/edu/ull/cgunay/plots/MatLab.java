@@ -27,7 +27,7 @@ public class MatLab extends Grapher  {
 
     /**
      */
-    public String plot(final SpikePlot plot) {
+    public String plotToString(final SpikePlot plot) {
 	// First converts the given array into matlab style array string
 	// (should be made a function)
 	return 
@@ -52,7 +52,7 @@ public class MatLab extends Grapher  {
      * @param plot a <code>Plot</code> value
      * @return a <code>String</code> value
      */
-    public String plot(Plot plot) {
+    public String plotToString(Plot plot) {
 	Range range = plot.getRange();
 
 	return
@@ -141,6 +141,13 @@ public class MatLab extends Grapher  {
      */
     public void setWindow(int windowNumber) {
 	grapherOut.println("figure;"); // Opens a new figure
+    }
+
+    public void writeEPS(PlotHandle handle, String filename) {
+	grapherOut.println("print -depsc2 -f" + handle.getWindowNumber()
+			   + " " + filename);
+	waitForResponse();
+	System.out.println(response());
     }
     
 }// MatLab

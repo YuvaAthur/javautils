@@ -35,7 +35,7 @@ public class GNUPlot extends Grapher {
 
     /**
      */
-    public String plot(final SpikePlot plot) {
+    public String plotToString(final SpikePlot plot) {
 	Range range = plot.getRange();
 
 	return
@@ -60,7 +60,7 @@ public class GNUPlot extends Grapher {
      * @param plot a <code>Plot</code> value
      * @return a <code>String</code> value
      */
-    public String plot(Plot plot) {
+    public String plotToString(Plot plot) {
 	Range range = plot.getRange();
 	return
 	    plot.preamble() +
@@ -107,6 +107,20 @@ public class GNUPlot extends Grapher {
 
     public void setWindow(int windowNumber) {
 	grapherOut.println("set terminal x11 " + windowNumber);
+    }
+
+    /**
+     * Sets terminal type to postscript eps and directs the output to given filename.
+     *
+     * @param handle a <code>PlotHandle</code> value
+     * @param filename a <code>String</code> value
+     */
+    public void writeEPS(PlotHandle handle, String filename) {
+	grapherOut.println("set terminal postscript eps\n" +
+			   "set output \"" + filename + "\"\n" +
+			   plotToString(handle.getPlot()));
+	waitForResponse();
+	System.out.println(response());
     }
 
     }// GNUPlot

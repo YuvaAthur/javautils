@@ -132,14 +132,23 @@ abstract public class Grapher  {
 
     /**
      * Generic plot that calls <code>Plot.body()</code> as the body.
-     * Needs to be redefined in subclasses and it is an error to call this function here.
+     * <!-- Needs to be redefined in subclasses and it is an error to call this function here.-->
      * @param plot a <code>Plot</code> value
      * @return a <code>String</code> value
      * @see Plot#body
      */
-    public String plot(Plot plot) {
-	throw new Error("This function should not be called");
-    }
+    abstract public String plotToString(Plot plot);/* {
+	throw new Error("This method is only defined in subclasses!");
+    }*/
+
+    /**
+     * Returns a <code>String</code> representation of a spike
+     * plot for the <code>Grapher</code>.
+     * @param plot a <code>SpikePlot</code> value
+     * @return a <code>String</code> value
+     * @see GNUPlot#plot(SpikePlot)
+     */
+    abstract public String plotToString(SpikePlot plot); 
 
     /**
      * @param title a <code>String</code> value
@@ -152,7 +161,7 @@ abstract public class Grapher  {
     }
 
     /**
-     * Multiple plots in the same window, arranged one on top of the other.
+     * Multiple plots in the same window, arranged one on top of the other with same range.
      * Implemented separately for each grapher.
      * @param title a <code>String</code> value
      * @param plots a <code>Collection</code> value
@@ -161,15 +170,6 @@ abstract public class Grapher  {
      * @see MatLab#multiPlot
      */
     abstract public String multiPlot(String title, Collection plots);
-
-    /**
-     * Returns a <code>String</code> representation of a spike
-     * plot for the <code>Grapher</code>.
-     * @param plot a <code>SpikePlot</code> value
-     * @return a <code>String</code> value
-     * @see GNUPlot#plot(SpikePlot)
-     */
-    abstract public String plot(SpikePlot plot); 
 
     // tools
 
@@ -311,9 +311,11 @@ abstract public class Grapher  {
      */
     public String func(String name, String[] params) {
 	return new StringTask(name + "(", ")") {
+		boolean first = true;
 		public void job(Object o) {
-		    if (!this.retval.equals("")) 
-			this.retval += ", ";
+		    if (!first) 
+			super.job(", ");
+		    first = false;
 		    super.job(o);
 		}
 	    }.getString(Arrays.asList(params));
@@ -321,20 +323,33 @@ abstract public class Grapher  {
 
     /**
      * Displays the plot generated from the given plot description. 
+     * <p>TODO: Should return the PlotHandle and call directly Grapher.plot(Plot)
      * @param plot a <code>Plot</code> value
      * @return The response from the grapher
-     * @exception GrapherNotAvailableException if the grapher is not available
      * @see Plot#plot(Grapher)
      */
-    public String display(Plot plot) throws GrapherNotAvailableException {
-	if (grapherOut == null) 
-	    throw new GrapherNotAvailableException(); 
+    public PlotHandle display(Plot plot, PrintStream out) {
+	PlotHandle handle = new PlotHandle(plot, this, windowNumber);
 
-	setWindow(windowNumber++);
-	grapherOut.println(plot.plot(this));
+	setWindow(windowNumber);
+
+	// Bad bad hack.. shame on java's incapability of polymorphism
+	String plotStr =
+	    (plot instanceof SpikePlot) ?
+	    plotToString((SpikePlot)plot) : plotToString(plot);
+	    
+	grapherOut.println(plotStr);
+
+	windowNumber++;
 
 	waitForResponse();	
-	return response();
+
+	if (out != null)
+	    out.println(response());
+	else 
+	    System.out.println(response());
+
+	return handle;
     }
 
     /**
@@ -348,9 +363,8 @@ abstract public class Grapher  {
      * Returns the standard and error outputs of the process if available.
      *
      * @return a <code>String</code> value
-     * @exception GrapherNotAvailableException if the grapher is not available
      */
-    public String response() throws GrapherNotAvailableException {
+    public String response() {
 	String retval = "";
 
 	try {
@@ -365,7 +379,7 @@ abstract public class Grapher  {
 		retval += (char)grapherErr.read();
 	    } // end of while (grapherErr.ready())	     
 	} catch (IOException e) {
-	    throw new GrapherNotAvailableException("" + e); 
+	    throw new RuntimeException("" + e); 
 	} // end of try-catch
 	
 	return retval;
@@ -377,14 +391,20 @@ abstract public class Grapher  {
      *
      * @exception GrapherNotAvailableException if an error occurs
      */
-    synchronized public void waitForResponse() throws GrapherNotAvailableException {
+    synchronized public void waitForResponse() {
+	int
+	    until = 5000,	// max wait time in msecs
+	    time = 0,		// counter
+	    incr = 200;		// step size (in msecs)
+	
 	try {
-	    while (!grapherErr.ready() && !grapherMsg.ready()) {
-		wait(200);	// Sleep some msecs
+	    while (!grapherErr.ready() && !grapherMsg.ready() && time < until) {
+		time += incr;
+		wait(incr);	// Sleep some msecs
 	    } // end of while (!grapherErr.ready() && !grapherMsg.ready())
 	    
 	} catch (IOException e) {
-	    throw new GrapherNotAvailableException("" + e); 	    
+	    throw new RuntimeException("" + e); 
 	} catch (InterruptedException e) {
 	    // do nothing
 	} // end of catch
@@ -398,5 +418,13 @@ abstract public class Grapher  {
     public void close() {
 	process.destroy();
     }
+
+    /**
+     * Exports an EPS file of the previously visualized (required) plot.
+     *
+     * @param handle a <code>PlotHandle</code> value
+     * @param filename a <code>String</code> value
+     */
+    abstract public void writeEPS(PlotHandle handle, String filename);
     
 }// Grapher
