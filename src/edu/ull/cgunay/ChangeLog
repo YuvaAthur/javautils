@@ -1,3 +1,19 @@
+2002-11-15  Cengiz Gunay  <cengiz@ull.edu>
+
+	* utils/plots/MatLab.java (Repository): Can display superposed plot.
+
+	* utils/plots/ErrorBarPlot.java (Repository): Now redundant with
+	Grapher.ErrorData and SingleDataPlot.
+
+	* utils/plots/Grapher.java (Repository): New grapher capabilities
+	for lisp-like representation of specific grapher commands.
+
+	* utils/plots/SuperposedDataPlot.java (Repository): Multiple data,
+	single axis plot.
+
+	* utils/plots/SingleDataPlot.java (Repository): Util for a single
+	dataset on a single axis.
+
 2002-11-13  Cengiz Gunay  <cengiz@ull.edu>
 
 	* utils/plots/ErrorValue.java (Repository): New profilable entity
