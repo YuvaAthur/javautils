@@ -123,8 +123,12 @@ abstract public class Grapher  {
 		public void job(Object o) {
 		    Map.Entry entry = (Map.Entry)o;
 		    double val = ((Profilable)entry.getValue()).doubleValue();
-		    
-		    retval = add(retval, mul(geq("t", "" + entry.getKey()), "" + (val-lastval)));
+		    double delta = val - lastval;
+
+		    // Only add entry if there's any change in value
+		    if (delta != 0)
+			retval = add(retval,
+				     mul(geq("t", "" + entry.getKey()), "" + (val-lastval)));
 		    lastval = val;
 		}
 	    }.getString(profile.collection(range)));
