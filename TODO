@@ -1,3 +1,4 @@
-- Make a recipe function from Plot that commands the Grapher activity to create the graph
-	- make a subclass of grapher to be instantiated from Plot using grapher caps (instead of body, preamble, etc.)
+- move package plots out from under utils
++ Make a recipe function from Plot that commands the Grapher activity to create the graph
+	+ make a subclass of grapher to be instantiated from Plot using grapher caps (instead of body, preamble, etc.)
 + Add examples and starting point descriptions to plots/package.html
