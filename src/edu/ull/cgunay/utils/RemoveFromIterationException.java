@@ -1,5 +1,5 @@
 
-package neuroidnet.utils;
+package edu.ull.cgunay.utils;
 
 // $Id$
 /**
@@ -14,7 +14,7 @@ package neuroidnet.utils;
  * @version $Revision$ for this file.
  */
 
-public class RemoveFromIterationException extends IterationException  {
+public class RemoveFromIterationException extends TaskException  {
     public RemoveFromIterationException () {
 	
     }
