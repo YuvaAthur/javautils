@@ -78,7 +78,13 @@ public class MatLab extends Grapher {
 	 * @return a <code>String</code> value
 	 */
 	public String nextPattern() {
-	    return quote((String) it.next());
+	    try {
+		return quote((String) it.next());		 
+	    } catch (NoSuchElementException e) {
+		// Restart at the end of the list
+		it = Arrays.asList(lineColorSpecs).iterator();
+		return quote((String) it.next());
+	    } // end of try-catch
 	}
 
 	/**
