@@ -1,3 +1,20 @@
+2002-05-09  Cengiz Gunay  <cengiz@ull.edu>
+
+	* utils/plots/Grapher.java (Repository): Improved Grapher.profile() by making it
+	skip profile entries with zero change. Improved plot descriptions.
+
+	* utils/Iteration.java (Repository): Added a new static loop method both here and a 
+	counterpart in UninterruptedIteration that takes an array as argument and uses for
+	to loop.
+
+2002-05-04  Cengiz Gunay  <cengiz@ull.edu>
+
+	* utils/plots/PlotHandle.java (Repository): Birth of this class. Represents
+	the visual form of a plot associated with its grapher and windownumber. Also
+	holds the writeEPS() method.
+
+	* utils/Simulation.java (Repository): Changed it to an interface.
+
 2002-04-29  Cengiz Gunay  <cengiz@ull.edu>
 
 	* utils/Iteration.java (Repository): All functions throw BreakOutOfIterationException
