@@ -1,3 +1,4 @@
+- make a new DataTemplate (just a TaskWithReturn)?
 - use ant for creating the documentation
 - rename HasAxisLabels to AxisProperties
 - put LGPL license and fix copyright info, rename file to COPYING
