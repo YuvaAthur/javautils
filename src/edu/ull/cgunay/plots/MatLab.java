@@ -40,7 +40,77 @@ public class MatLab extends Grapher {
 	new ErrorDataType();
     }
     
-    class DefaultDataType extends DataType { 
+    /**
+     * If multiple datasets are plotted on same axis, cycle through these
+     * (only required for <i>stupid</i> Matlab). Also associate plot
+     * handles for each data set to be able to properly form a legend
+     * string.
+     */
+    class PatternIterator {
+
+	/**
+	 * Possible patterns.
+	 */
+	String[] lineColorSpecs = { "-", "--g", "-.r", ".m" };
+
+	/**
+	 * Form unique plot handle variables for properly forming
+	 * legend identifiers.
+	 */
+	int handleId;
+
+	/**
+	 * To iterate on <code>lineColorSpecs</code>.
+	 */
+	Iterator it;
+
+	/**
+	 * Reset iterators for at the beginning of each axis.
+	 */
+	public void newAxis() {
+	    it = Arrays.asList(lineColorSpecs).iterator();
+	    handleId = 0;
+	}
+
+	/**
+	 * Get the next pattern string.
+	 *
+	 * @return a <code>String</code> value
+	 */
+	public String nextPattern() {
+	    return quote((String) it.next());
+	}
+
+	/**
+	 * Describe <code>nextHandle</code> method here.
+	 *
+	 * @return a <code>String</code> value
+	 */
+	public String nextHandle() {
+	    return "handle" + (handleId++);
+	}
+    }
+
+    PatternIterator patterns = new PatternIterator();
+
+    abstract class MatLabDataType extends DataType {
+	String dataHandle;
+
+	public String getDataHandle() {
+	    return dataHandle;
+	}
+
+	MatLabDataType(String name, String commandName) {
+	    super(name, commandName);
+	}
+
+    }
+
+    /**
+     * Simple plot command type.
+     *
+     */
+    class DefaultDataType extends MatLabDataType { 
 	DefaultDataType() {
 	    super("default", "plot");
 	}
@@ -52,11 +122,15 @@ public class MatLab extends Grapher {
 	 * @return a <code>String</code> value
 	 */
 	public String plotCommand(Data data) {
-	    return axisCommand + paren( data.xExpression() + ", " + data.yExpression());
+	    dataHandle = patterns.nextHandle();
+	    return assign(dataHandle,
+			  axisCommand + paren(data.xExpression() + ", " +
+					      data.yExpression() + ", " +
+					       patterns.nextPattern()));
 	}
-	}
+    }
     
-    class ImpulseDataType extends Grapher.DataType {
+    class ImpulseDataType extends MatLabDataType {
 	
 	ImpulseDataType() {
 	    super("impulse", "stem");
@@ -69,11 +143,15 @@ public class MatLab extends Grapher {
 	 * @return a <code>String</code> value
 	 */
 	public String plotCommand(Data data) {
-	    return axisCommand + paren( data.xExpression() + ", " + data.yExpression());
+	    dataHandle = patterns.nextHandle();
+	    return assign(dataHandle,
+			  axisCommand + paren(data.xExpression() + ", " +
+					       data.yExpression() + ", " +
+					       patterns.nextPattern()));
 	}
-	}
+    }
 
-    class ErrorDataType extends Grapher.DataType {
+    class ErrorDataType extends MatLabDataType {
 	
 	ErrorDataType() {
 	    super("errorbar", "errorbar");
@@ -86,19 +164,26 @@ public class MatLab extends Grapher {
 	 * @return a <code>String</code> value
 	 */
 	public String plotCommand(Data data) {
-	    return axisCommand + paren( data.xExpression() + ", " + data.yExpression() + ", " +
-					((ErrorData)data).minExpression() + ", " +
-					((ErrorData)data).maxExpression() );
+	    String vectorDHandle = patterns.nextHandle();
+	    dataHandle = vectorDHandle + "(1)"; // legend handle is the first one!
+	    return assign(vectorDHandle,
+			  axisCommand + paren(data.xExpression() + ", "
+					      + data.yExpression() + ", "
+					      + ((ErrorData)data).minExpression() + ", "
+					      + ((ErrorData)data).maxExpression() + ", "
+					      + patterns.nextPattern()));
 	}
-	}
+    }
 
     /**
-     * @see #plotToString(Plot)
+     * @deprecated 
+     * @see #plotToStringAlt(Plot)
      */
     public String plotToString(final SpikePlot plot) {
+	return null;
 	// First converts the given array into matlab style array string
 	// (should be made a function)
-	return 
+	/*return 
 	    assign("t", new StringTask("[ ", " ]") {
 		    Range range = plot.getRange();
 
@@ -109,27 +194,28 @@ public class MatLab extends Grapher {
 		    }
 		}.getString(plot.getSpikes())) + ";\n" +
 	    "stem(t, ones(size(t,2)), 'filled');\n" +
-	    getLabel(plot) + getTitle(plot) +
-	    getXLabel(plot) + getYLabel(plot);
-
+	    labelString(plot) + titleString(plot) +
+	    xLabelString(plot) + yLabelString(plot);*/
     }
 
     /**
      * Matlab specific plotting command. Calls Plot.body().
-     *
+     * @deprecated
+     * @see #plotToStringAlt
      * @see Plot#body
      * @param plot a <code>Plot</code> value
      * @return a <code>String</code> value
      */
     public String plotToString(SimplePlot plot) {
-	Range range = plot.getRange();
+	return null;
+	/*Range range = plot.getRange();
 
 	return
 	    plot.preamble() +
 	    assign("t", "[" + ((range!=null) ? range(range) : "")+ "]") + ";\n" +
 	    "plot (x, " + plot.body() + ");\n" +
-	    getLabel(plot) + getTitle(plot) +
-	    getXLabel(plot) + getYLabel(plot);
+	    labelString(plot) + titleString(plot) +
+	    xLabelString(plot) + yLabelString(plot);*/
     }
 
     /**
@@ -156,18 +242,42 @@ public class MatLab extends Grapher {
 	 * @return a <code>String</code> value
 	 */
 	String getString() {
-	    data = (Data)getFirst();
-	    if (size() == 1)	// Single plot
-		return // TODO: "t" should be done by looking at the variables
-		    getDataPreamble(data) + ";\n" + 
-		    //assign("t", "[" + ((range!=null) ? range(range) : "")+ "]") + ";\n" +
-		    data.dataType.plotCommand(data) + ";\n " ;
-	    else if (size() > 1) { // Multiplot
-		// not implemented yet
-		throw new Error("Multiplots not implemented!");
+	    patterns.newAxis();
+	    if (size() == 1) {	// Single plot
+		Data data = (Data) getFirst();
+		return 
+		    getDataPreamble(data) + 
+		    data.dataType.plotCommand(data) +
+		    labelString(data) + titleString(this) +
+		    xLabelString(this) + yLabelString(this);
+
+	    } else if (size() > 1) { // superposed plot
+		return
+		    new StringTask(command("hold on"), command("hold off")) {
+			String labelString = "";
+			String labelHandles = "[";
+			public void job(Object o) {
+			    Data data = (Data) o;
+			    String dataCommands =
+				getDataPreamble(data) +
+				data.dataType.plotCommand(data);
+			    labelString += ( !first ? ", " : "" ) + quote(data.getLabel());
+			    labelHandles +=
+				( !first ? "; " : "" ) +
+				((MatLabDataType)data.getDataType()).getDataHandle();
+			    super.job(dataCommands);
+			}
+			
+			public String getString(Collection c) {
+			    return
+				super.getString(c) +
+				command("legend" + paren(labelHandles + "], " + labelString));
+			}
+		    }.getString(this) + titleString(this) +
+		    xLabelString(this) + yLabelString(this);
 	    } // end of if (size() > 1)
 	    
-	    throw new Error("Multiplots: undefined");
+	    throw new Error("Undefined");
 	}
 
 	/**
@@ -176,32 +286,32 @@ public class MatLab extends Grapher {
 	 * @param data a <code>Data</code> value
 	 * @return a <code>String</code> value
 	 */
-	    String getDataPreamble(Data data) {
-		// Loop on all variables defined in the data
-		return 
-		    new StringTask() {
-			public void job(Object o) {
-			    // for each range variable, declare the range
-			    // for each vector variable initialize a variable
-			    Map.Entry entry = (Map.Entry) o;
+	String getDataPreamble(Data data) {
+	    // Loop on all variables defined in the data
+	    return 
+		new StringTask() {
+		    public void job(Object o) {
+			// for each range variable, declare the range
+			// for each vector variable initialize a variable
+			Map.Entry entry = (Map.Entry) o;
 			
-			    if (entry.getValue() instanceof Range) {
-				Range range = (Range) entry.getValue();
-				super.job(assign((String) entry.getKey(),
-						 "[" + ((range!=null) ? range(range) : "")+ "]"));
-			    } else if (entry.getValue() instanceof Collection) {
-				Collection vector = (Collection) entry.getValue();
-				super.job(assign((String) entry.getKey(),
-						 // make a matlab vector (TODO: generalize this)
-						 new StringTask("[", "]", ",").getString(vector)));
-			    } else {
-				new Error("Undefined type for variable " + entry.getKey() +
-					  " in dataset.");
-			    } // end of else
+			if (entry.getValue() instanceof Range) {
+			    Range range = (Range) entry.getValue();
+			    super.job(assign((String) entry.getKey(),
+					     "[" + ((range!=null) ? range(range) : "")+ "]"));
+			} else if (entry.getValue() instanceof Collection) {
+			    Collection vector = (Collection) entry.getValue();
+			    super.job(assign((String) entry.getKey(),
+					     // make a matlab vector (TODO: generalize this)
+					     new StringTask("[", "]", ",").getString(vector)));
+			} else {
+			    new Error("Undefined type for variable " + entry.getKey() +
+				      " in dataset.");
+			} // end of else
 			
-			}
-		    }.getString(data.getVariables().entrySet());
-	    }
+		    }
+		}.getString(data.getVariables().entrySet());
+	}
 	}
 
     /**
@@ -226,9 +336,9 @@ public class MatLab extends Grapher {
      * @param plot a <code>Plot</code> value
      * @return Label setting statement or "" if no label exists.
      */
-    String getLabel(Plot plot) {
+    String labelString(Data plot) {
 	String label = plot.getLabel();
-	return (label != null) ? "legend('" + label + "');\n" : "";
+	return (label != null) ? command("legend" + paren(quote(label))) : "";
     }
 
     /**
@@ -237,9 +347,9 @@ public class MatLab extends Grapher {
      * @param plot a <code>Plot</code> value
      * @return MatLab statement or "" if no title exists.
      */
-    String getTitle(HasAxisLabels plot) {
+    String titleString(HasAxisLabels plot) {
 	String title = plot.getTitle();
-	return (title != null) ? "title('" + title + "');\n" : "";
+	return (title != null) ? command("title" + paren(quote(title))) : "";
     }
 
     /**
@@ -249,9 +359,9 @@ public class MatLab extends Grapher {
      * @param plot a <code>Plot</code> value
      * @return a <code>String</code> value
      */
-    String getXLabel(HasAxisLabels plot) {
+    String xLabelString(HasAxisLabels plot) {
 	String label = plot.getXLabel();
-	return (label != null) ? "xlabel('" + label  + "');\n" : "";
+	return (label != null) ? command("xlabel" + paren(quote(label))) : "";
     }
 
     /**
@@ -261,9 +371,9 @@ public class MatLab extends Grapher {
      * @param plot a <code>Plot</code> value
      * @return a <code>String</code> value
      */
-    String getYLabel(HasAxisLabels plot) {
+    String yLabelString(HasAxisLabels plot) {
 	String label = plot.getYLabel();
-	return (label != null) ? "ylabel('" + label  + "');\n" : "";
+	return (label != null) ? command("ylabel" + paren(quote(label))) : "";
     }
 
     /**
@@ -349,7 +459,7 @@ public class MatLab extends Grapher {
 		String preambleStr = "";
 		String plotStr =
 		    assign("t", "[" + ((maximalRange!=null) ? range(maximalRange) : "")+ "]") +
-		    ";\n" + "plot (";
+		    "plot (";
 		String labelStr = "legend(";
 		String otherLabels = "";
 
@@ -365,7 +475,7 @@ public class MatLab extends Grapher {
 		    String label = plot.getLabel();
 		    labelStr += (!first ? ", " : "") + (label != null ? "'" + label + "'" : "");
 		    // Another bad hack:
-		    otherLabels = getXLabel(plot) + getYLabel(plot);
+		    otherLabels = xLabelString(plot) + yLabelString(plot);
 		    first = false;
 		}
 		public Object getValue() {
@@ -441,7 +551,7 @@ public class MatLab extends Grapher {
      * @return a <code>String</code> value
      */
     public String assign(String var, String value) {
-	return super.assign(var, value) + ";\n";
+	return command(super.assign(var, value));
     }
 
     /**
@@ -462,6 +572,24 @@ public class MatLab extends Grapher {
     public void close() {
 	out.println("exit");
 	out.flush();
+    }
+
+    /**
+     * Matlab style 'quoting'.
+     *
+     * @param value a <code>String</code> value
+     */
+    public String quote(String value) {
+	return "'" + value + "'";
+    }
+
+    /**
+     * Add end-of-line separator for matlab.
+     *
+     * @param line a <code>String</code> value
+     */
+    public String command(String line) {
+	return line + ";\n";
     }
 
     /**
