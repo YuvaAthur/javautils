@@ -48,7 +48,7 @@ public class SpikePlot extends Plot  {
 	    // if not specified, take the max range
 	    if (range == null) 
 		this.range = new Range(((Double)spikes.firstElement()).doubleValue(),
-				       ((Double)spikes.lastElement()).doubleValue());
+				       ((Double)spikes.lastElement()).doubleValue() + 0.001);
 
 	} catch (NoSuchElementException e) {
 	    // do nothing, keep null range
