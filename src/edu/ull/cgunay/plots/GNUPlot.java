@@ -34,8 +34,10 @@ public class GNUPlot extends Grapher {
     /**
      */
     public String plot(final SpikePlot plot) {
+	Range range = plot.getRange();
+
 	String retval =
-	    "plot [" + assign("x", range(plot.getRange())) + "] " +
+	    "plot " + ((range!=null) ? "[" + assign("x", range(range)) + "] " : "") +
 	    "'-'" + getTitle(plot) + " with impulses" + "\n";
 
 	TaskWithReturn stringTask = new StringTask() {
@@ -43,7 +45,7 @@ public class GNUPlot extends Grapher {
 
 		public void job(Object o) {
 		    double time = ((Double)o).doubleValue();
-		    if (time > range.getStart() && time <= range.getEnd()) {
+		    if (time >= range.getStart() && time <= range.getEnd()) {
 			super.job(time + " 1\n"); 
 		    } // end of if 
 		}
@@ -54,10 +56,17 @@ public class GNUPlot extends Grapher {
 	return retval + stringTask.getValue() + "EOF\n";
     }
 
+    /**
+     * gnuplot specific plotting command, calls plot.body().
+     * 
+     * @see Plot#body
+     * @param plot a <code>Plot</code> value
+     * @return a <code>String</code> value
+     */
     public String plot(Plot plot) {
-
 	Range range = plot.getRange();
 	return
+	    plot.preamble() +
 	    "plot " + ((range!=null) ? "[" + assign("t", range(range)) + "] " : "") +
 	    plot.body() + getTitle(plot) + "\n";
     }
@@ -85,7 +94,10 @@ public class GNUPlot extends Grapher {
 
     public void close() {
 	grapherOut.println("exit");
-	grapherOut.flush();
+    }
+
+    public void setWindow(int windowNumber) {
+	grapherOut.println("set terminal x11 " + windowNumber);
     }
 
     }// GNUPlot

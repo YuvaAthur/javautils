@@ -19,7 +19,7 @@ import neuroidnet.ntr.plots.Plot;
 
 abstract public class Plot  {
 
-    Grapher grapher;
+    protected Grapher grapher;
     
     /**
      * Get the value of grapher.
@@ -59,7 +59,7 @@ abstract public class Plot  {
      * <code>Range</code> of the plot.
      *
      */
-    Range range;
+    protected Range range;
     
     /**
      * Get the value of range.
@@ -84,11 +84,41 @@ abstract public class Plot  {
     }
 
     /**
-     * Returns body for the specific plot.
+     * Returns body that appears inside the plot command for the specific plot.
      *
      * @return a <code>String</code> value
      */
     abstract public String body();
+
+    /**
+     * Helper function to set grapher before calling body.
+     * @see MembranePotentialPlot
+     * @param grapher a <code>Grapher</code> value
+     * @return a <code>String</code> value
+     */
+    public String body(Grapher grapher) {
+	this.grapher = grapher;
+	return body();
+    }
+
+    /**
+     * Returns a preamble to appear before the plot command. 
+     * By default returns empty string.
+     * 
+     * @return a <code>String</code> value
+     */
+    public String preamble() { return ""; }
+
+    /**
+     * Returns a preamble to appear before the plot command. 
+     * By default returns empty string.
+     * 
+     * @return a <code>String</code> value
+     */
+    public String preamble(Grapher grapher) {
+	this.grapher = grapher;
+	return preamble();
+    }
     
     /**
      * Delegates the request to the <code>Grapher</code> instance
@@ -170,6 +200,28 @@ abstract public class Plot  {
     public String mul(String param1, String param2) {
 	return grapher.mul(param1, param2);
     }
+
+    /**
+     *
+     * @param param1 <description>
+     * @param param2 <description>
+     * @return <description>
+     * @see neuroidnet.ntr.plots.Grapher#geq(String, String)
+     */
+    public String geq(String param1, String param2) {
+	return grapher.geq(param1, param2);
+    }
+
+    /**
+     *
+     * @param param1 <description>
+     * @param param2 <description>
+     * @return <description>
+     * @see neuroidnet.ntr.plots.Grapher#div(String, String)
+     */
+    public String div(String param1, String param2) {
+	return grapher.div(param1, param2);
+    }
     
     /**
      *
@@ -179,6 +231,16 @@ abstract public class Plot  {
      */
     public String neg(String param1) {
 	return grapher.neg(param1);
+    }
+
+    /**
+     *
+     * @param param1 <description>
+     * @return <description>
+     * @see neuroidnet.ntr.plots.Grapher#exp(String)
+     */
+    public String exp(String param1) {
+	return grapher.exp(param1);
     }
     
     /**

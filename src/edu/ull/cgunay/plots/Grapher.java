@@ -64,6 +64,12 @@ abstract public class Grapher  {
     }
 
     /**
+     * The number of the window in which the plot will appear.
+     *
+     */
+    private int windowNumber = 1;
+
+    /**
      * Spawns a grapher process (used from subclasses).
      *
      * @param processName the string to be executed
@@ -73,7 +79,7 @@ abstract public class Grapher  {
 	try {
 	    process = Runtime.getRuntime().exec(processName); 
 
-	    grapherOut = new PrintWriter(process.getOutputStream());
+	    grapherOut = new PrintWriter(process.getOutputStream(), true);
 	    grapherMsg = new BufferedReader(new InputStreamReader(process.getInputStream()));
 	    grapherErr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
@@ -94,14 +100,14 @@ abstract public class Grapher  {
      * @return a <code>String</code> value
      */
     public String profile(Profile profile, Range range) {
-	TaskWithReturn profileTask = new StringTask() {
+	TaskWithReturn profileTask = new StringTask("0") {
 		double lastval = 0;
 
 		public void job(Object o) {
 		    Map.Entry entry = (Map.Entry)o;
 		    double val = ((Profilable)entry.getValue()).doubleValue();
 		    
-		    retval = add(retval, mul("(t>=" + entry.getKey() + ")", "" + (val-lastval)));
+		    retval = add(retval, mul(geq("t", "" + entry.getKey()), "" + (val-lastval)));
 		    lastval = val;
 		}
 	    };
@@ -155,18 +161,18 @@ abstract public class Grapher  {
 
     /**
      * Returns a <code>String</code> that adds two parameters for the <code>Grapher</code>.
-     * By default it is "a + b".
+     * By default it is "(a) + (b)".
      * @param a a <code>String</code> value
      * @param b a <code>String</code> value
      * @return a <code>String</code> value
      */
     public String add(String a, String b) {
-	return a + "+" + b;
+	return paren(a) + "+" + paren(b);
     }
 
     /**
      * Returns a <code>String</code> that subtracts two parameters for the <code>Grapher</code>.
-     * by default it is <code>add(a, neg(b))</code>.
+     * by default it is <code>add((a), neg(b))</code>.
      * @param a a <code>String</code> value
      * @param b a <code>String</code> value
      * @return a <code>String</code> value
@@ -177,25 +183,63 @@ abstract public class Grapher  {
 
     /**
      * Returns a <code>String</code> that multiplies two parameters for the <code>Grapher</code>.
-     * By default it is "a * b".
+     * By default it is "(a) * (b)".
      *
      * @param a a <code>String</code> value
      * @param b a <code>String</code> value
      * @return a <code>String</code> value
      */
     public String mul(String a, String b) {
-	return a + "*" + b;
+	return paren(a) + "*" + paren(b);
+    }
+
+    /**
+     * Returns a <code>String</code> that is a greater or equal conditional
+     * expression for the <code>Grapher</code>.
+     * By default it is "(a) >= (b)".
+     *
+     * @param a a <code>String</code> value
+     * @param b a <code>String</code> value
+     * @return a <code>String</code> value
+     */
+    public String geq(String a, String b) {
+	return paren(a) + ">=" + paren(b);
+    }
+
+    /**
+     * Returns a <code>String</code> that divides two parameters for the <code>Grapher</code>.
+     * By default it is "(a) / (b)".
+     *
+     * @param a a <code>String</code> value
+     * @param b a <code>String</code> value
+     * @return a <code>String</code> value
+     */
+    public String div(String a, String b) {
+	return paren(a) + "/" + paren(b);
     }
 
     /**
      * Returns a <code>String</code> that negates the parameter for the <code>Grapher</code>.
-     * By default it is "-a".
+     * By default it is "-(a)".
      *
      * @param a a <code>String</code> value
      * @return a <code>String</code> value
      */
     public String neg(String a) {
-	return "-" + a;
+	return "-" + paren(a);
+    }
+
+    /**
+     * Returns a <code>String</code> that takes the exponential of the
+     * parameter for the <code>Grapher</code>.
+     * By default it is "exp(a)".
+     *
+     * @param a a <code>String</code> value
+     * @return a <code>String</code> value
+     */
+    public String exp(String a) {
+	String params[] = { a };
+	return func("exp", params);
     }
 
     /**
@@ -275,15 +319,21 @@ abstract public class Grapher  {
      * @param grapherStr a <code>String</code> value
      */
     public String display(Plot plot) throws GrapherNotAvailableException {
-	try {
-	    grapherOut.println(plot.plot(this));
-	    grapherOut.flush();
-	} catch (NullPointerException e) {
-	    throw new GrapherNotAvailableException();
-	} 
-	
+	if (grapherOut == null) 
+	    throw new GrapherNotAvailableException(); 
+
+	setWindow(windowNumber++);
+	grapherOut.println(plot.plot(this));
+
+	waitForResponse();	
 	return response();
     }
+
+    /**
+     * Sets the current plot window according to grapher platform.
+     *
+     */
+    abstract public void setWindow(int windowNumber);
 
     /**
      * Returns the standard and error outputs of the process if available.
@@ -309,6 +359,26 @@ abstract public class Grapher  {
 	} // end of try-catch
 	
 	return retval;
+    }
+
+
+    /**
+     * Wait until a response comes from either the output or error streams of the process.
+     *
+     * @exception GrapherNotAvailableException if an error occurs
+     */
+    synchronized public void waitForResponse() throws GrapherNotAvailableException {
+	try {
+	    while (!grapherErr.ready() && !grapherMsg.ready()) {
+		wait(200);	// Sleep some msecs
+	    } // end of while (!grapherErr.ready() && !grapherMsg.ready())
+	    
+	} catch (IOException e) {
+	    throw new GrapherNotAvailableException("" + e); 	    
+	} catch (InterruptedException e) {
+	    // do nothing
+	} // end of catch
+	
     }
 
     /**

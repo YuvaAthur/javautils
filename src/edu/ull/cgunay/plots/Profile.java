@@ -39,14 +39,16 @@ public class Profile extends TreeMap implements Observer, Serializable {
     }
 
     public Iterator iterator(Range range) {
-	try {
-	    return
-		subMap(headMap(new Double(range.getStart() + 0.01)).lastKey(),
-		       new Double(range.getEnd() + 0.01)).entrySet().iterator();
-	} catch (NullPointerException e) {
-	    return entrySet().iterator();	// if range == null
-	} // end of try-catch
+	if (range == null) 
+	    return entrySet().iterator();	// if range == null	     
+
+	SortedMap headMap = headMap(new Double(range.getStart() + 0.01));
+	Double
+	    end = new Double(range.getEnd() + 0.01),
+	    start = (headMap != null) ? (Double)headMap.lastKey() : new Double(range.getStart() + 0.01);
 	
+	return
+	    subMap(start, end).entrySet().iterator();
     }
 
     public Range getRange() {
