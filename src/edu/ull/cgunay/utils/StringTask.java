@@ -14,9 +14,7 @@ import java.util.Collection;
  * <pre>
  * String inParens = new StringTask("(", ")") {
  *   public void job(Object o) {
- *     if (!retval.equals("")) 
- *       super.job(", ");	// Add a comma if there's any preceding entry
- *     super("" + o);	// Add the string representation of object
+ *     super.job(o + ", ");	// Add the string representation of object and a comma
  *   }
  * }.getString(doubleVector);	// Iterate on doubleVector
  * </pre>
