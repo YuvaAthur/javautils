@@ -1,0 +1,15 @@
+import edu.ull.cgunay.utils.plots.*;
+
+prof = new Profile();
+
+prof.put(new Double(1), new ErrorValue(2,1,4));
+prof.put(new Double(2), new ErrorValue(8,7,9));
+prof.put(new Double(3), new ErrorValue(1,1,3));
+prof.put(new Double(4), new ErrorValue(3,1,4));
+
+p = new ErrorBarPlot("helloooooo", null, prof);
+
+if (g == null)
+    g = new MatLab();
+
+g.display(p, null);

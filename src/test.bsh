@@ -9,5 +9,7 @@ prof.put(new Double(4), new ProfilableDouble(3));
 
 p = new ProfilePlot(prof);
 
-g = new MatLab();
+if (g == null)
+    g = new MatLab();
+
 g.display(p, null);

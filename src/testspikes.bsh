@@ -10,5 +10,7 @@ spikes.add(new Double(12));
 
 p = new SpikePlot(spikes);
 
-g = new MatLab();
+if (g == null)
+    g = new MatLab();
+
 g.display(p, null);
