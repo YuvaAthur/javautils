@@ -1,24 +1,47 @@
 
-package neuroidnet.ntr.plots;
-import neuroidnet.ntr.plots.Grapher;
-import neuroidnet.ntr.plots.Range;
-import neuroidnet.ntr.plots.Profile;
-import neuroidnet.ntr.plots.Plot;
+package edu.ull.cgunay.utils.plots;
 
 // $Id$
 /**
- * Grapher independent description for plots.
- *
+ * Grapher independent description for plots. The plot is converted to 
+ * a grapher specific String representation when the <code>plot(Grapher)</code> method 
+ * is invoked. 
+ * <p>In general the plot is assumed to be a <code>String</code> composed of a preamble,
+ * a plot command and some post commands or data.
+ * The <code>preamble()</code> method represents the information required before the actual plot
+ * command, and the <code>body()</code> method represents the part that will appear as the body of
+ * the plot command. The range of the plot that will appear as part of the plot command is
+ * kept as the <code>range</code> attribute.
+ * <p>As a simple example here is how to plot the y = t + 5 graph: <br>
+ * (The x-axis is called "t" by default)
+ * <blockquote><pre>
+ * class MyPlot extends Plot {
+ *   MyPlot(Range range) { super("My plot!", range); }
+ *   String body() {
+ *     return add("t","5");
+ *   }
+ * }
+ * </pre></blockquote>
+ * <p> See the description in the <code>Grapher</code> class on how to display the plot.
+ * Other <code>private</code> methods in this class are simply delegated to the
+ * associated <code>Grapher</code> instance (if available).
  * <p>Created: Mon Apr  8 17:35:11 2002
  * <p>Modified: $Date$
  *
- * @see Grapher
  * @author <a href="mailto:">Cengiz Gunay</a>
  * @version $Revision$ for this file.
+ * @see #plot(Grapher)
+ * @see #preamble
+ * @see #body
+ * @see #range
+ * @see Grapher
  */
-
 abstract public class Plot  {
 
+    /**
+     * <code>Grapher</code> instance associated with the plot (if available).
+     *
+     */
     protected Grapher grapher;
     
     /**
@@ -37,6 +60,10 @@ abstract public class Plot  {
 	this.grapher = v;
     }    
 
+    /**
+     * Plot title.
+     *
+     */
     String title;
     
     /**
@@ -121,12 +148,12 @@ abstract public class Plot  {
     }
     
     /**
-     * Delegates the request to the <code>Grapher</code> instance
-     * to do the appropriate things according to the subclass.
+     * Returns a <code>String</code> representation of the plot
+     * for the given grapher. Delegates the request to the
+     * <code>Grapher</code> instance.
      *
-     * @see Grapher#plot(ProfilePlot)
+     * @see Grapher#plot(Plot)
      * @see Grapher#plot(SpikePlot)
-     * @see Grapher#plot(PotentialPlot)
      * @return a <code>String</code> value
      */
     public String plot(Grapher grapher) {
@@ -134,16 +161,16 @@ abstract public class Plot  {
 	return grapher.plot(this);
     }
 
-    // Code for delegation of neuroidnet.ntr.plots.Grapher methods to grapher
+    // Code for delegation of edu.ull.cgunay.utils.plots.Grapher methods to grapher
     
     /**
      *
      * @param param1 <description>
      * @param param2 <description>
      * @return <description>
-     * @see neuroidnet.ntr.plots.Grapher#add(String, String)
+     * @see edu.ull.cgunay.utils.plots.Grapher#add(String, String)
      */
-    public String add(String param1, String param2) {
+    String add(String param1, String param2) {
 	return grapher.add(param1, param2);
     }
     
@@ -152,9 +179,9 @@ abstract public class Plot  {
      * @param param1 <description>
      * @param param2 <description>
      * @return <description>
-     * @see neuroidnet.ntr.plots.Grapher#assign(String, String)
+     * @see edu.ull.cgunay.utils.plots.Grapher#assign(String, String)
      */
-    public String assign(String param1, String param2) {
+    String assign(String param1, String param2) {
 	return grapher.assign(param1, param2);
     }
     
@@ -163,9 +190,9 @@ abstract public class Plot  {
      * @param param1 <description>
      * @param param2 <description>
      * @return <description>
-     * @see neuroidnet.ntr.plots.Grapher#profile(Profile, Range)
+     * @see edu.ull.cgunay.utils.plots.Grapher#profile(Profile, Range)
      */
-    public String profile(Profile param1, Range param2) {
+    String profile(Profile param1, Range param2) {
 	return grapher.profile(param1, param2);
     }
     
@@ -173,9 +200,9 @@ abstract public class Plot  {
      *
      * @param param1 <description>
      * @return <description>
-     * @see neuroidnet.ntr.plots.Grapher#plot(Plot)
+     * @see edu.ull.cgunay.utils.plots.Grapher#plot(Plot)
      */
-    public String plot(Plot param1) {
+    String plot(Plot param1) {
 	return grapher.plot(param1);
     }
     
@@ -184,9 +211,9 @@ abstract public class Plot  {
      * @param param1 <description>
      * @param param2 <description>
      * @return <description>
-     * @see neuroidnet.ntr.plots.Grapher#sub(String, String)
+     * @see edu.ull.cgunay.utils.plots.Grapher#sub(String, String)
      */
-    public String sub(String param1, String param2) {
+    String sub(String param1, String param2) {
 	return grapher.sub(param1, param2);
     }
     
@@ -195,9 +222,9 @@ abstract public class Plot  {
      * @param param1 <description>
      * @param param2 <description>
      * @return <description>
-     * @see neuroidnet.ntr.plots.Grapher#mul(String, String)
+     * @see edu.ull.cgunay.utils.plots.Grapher#mul(String, String)
      */
-    public String mul(String param1, String param2) {
+    String mul(String param1, String param2) {
 	return grapher.mul(param1, param2);
     }
 
@@ -206,9 +233,9 @@ abstract public class Plot  {
      * @param param1 <description>
      * @param param2 <description>
      * @return <description>
-     * @see neuroidnet.ntr.plots.Grapher#geq(String, String)
+     * @see edu.ull.cgunay.utils.plots.Grapher#geq(String, String)
      */
-    public String geq(String param1, String param2) {
+    String geq(String param1, String param2) {
 	return grapher.geq(param1, param2);
     }
 
@@ -217,9 +244,9 @@ abstract public class Plot  {
      * @param param1 <description>
      * @param param2 <description>
      * @return <description>
-     * @see neuroidnet.ntr.plots.Grapher#div(String, String)
+     * @see edu.ull.cgunay.utils.plots.Grapher#div(String, String)
      */
-    public String div(String param1, String param2) {
+    String div(String param1, String param2) {
 	return grapher.div(param1, param2);
     }
     
@@ -227,9 +254,9 @@ abstract public class Plot  {
      *
      * @param param1 <description>
      * @return <description>
-     * @see neuroidnet.ntr.plots.Grapher#neg(String)
+     * @see edu.ull.cgunay.utils.plots.Grapher#neg(String)
      */
-    public String neg(String param1) {
+    String neg(String param1) {
 	return grapher.neg(param1);
     }
 
@@ -237,9 +264,9 @@ abstract public class Plot  {
      *
      * @param param1 <description>
      * @return <description>
-     * @see neuroidnet.ntr.plots.Grapher#exp(String)
+     * @see edu.ull.cgunay.utils.plots.Grapher#exp(String)
      */
-    public String exp(String param1) {
+    String exp(String param1) {
 	return grapher.exp(param1);
     }
     
@@ -249,9 +276,9 @@ abstract public class Plot  {
      * @param param2 <description>
      * @param param3 <description>
      * @return <description>
-     * @see neuroidnet.ntr.plots.Grapher#def_func(String, String[], String)
+     * @see edu.ull.cgunay.utils.plots.Grapher#def_func(String, String[], String)
      */
-    public String def_func(String param1, String[] param2, String param3) {
+    String def_func(String param1, String[] param2, String param3) {
 	return grapher.def_func(param1, param2, param3);
     }
     
@@ -259,9 +286,9 @@ abstract public class Plot  {
      *
      * @param param1 <description>
      * @return <description>
-     * @see neuroidnet.ntr.plots.Grapher#range(Range)
+     * @see edu.ull.cgunay.utils.plots.Grapher#range(Range)
      */
-    public String range(Range param1) {
+    String range(Range param1) {
 	return grapher.range(param1);
     }
     
@@ -270,9 +297,9 @@ abstract public class Plot  {
      * @param param1 <description>
      * @param param2 <description>
      * @return <description>
-     * @see neuroidnet.ntr.plots.Grapher#func(String, String[])
+     * @see edu.ull.cgunay.utils.plots.Grapher#func(String, String[])
      */
-    public String func(String param1, String[] param2) {
+    String func(String param1, String[] param2) {
 	return grapher.func(param1, param2);
     }
 
