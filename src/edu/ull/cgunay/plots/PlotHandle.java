@@ -3,7 +3,6 @@ package edu.ull.cgunay.utils.plots;
 
 // $Id$
 /**
- * Under construction!
  * Entity that associates a plot and a grapher at display time. This is the handle
  * that represents the visual representation of the plot. It contains pointers to the plot,
  * the grapher, and the associated window number in the grapher.
@@ -17,7 +16,6 @@ package edu.ull.cgunay.utils.plots;
  * @see Grapher
  * @see Grapher#windowNumber
  */
-
 public class PlotHandle  {
     /**
      * The description of the <code>Plot</code> encapsulated.
@@ -61,10 +59,29 @@ public class PlotHandle  {
 	return windowNumber;
     }
 
+    /**
+     * Association of the plot with the grapher.
+     *
+     * @param plot a <code>Plot</code> value
+     * @param grapher a <code>Grapher</code> value
+     * @param windowNumber an <code>int</code> value
+     */
     public PlotHandle (Plot plot, Grapher grapher, int windowNumber) {
 	this.plot = plot;
 	this.grapher = grapher;
 	this.windowNumber = windowNumber;
+
+	plot.setGrapher(grapher);
+    }
+
+    /**
+     * Exports an EPS file of the current plot with the grapher.
+     * Calls Grapher.writeEPS()
+     * @param filename a <code>String</code> value
+     * @see Grapher#writeEPS
+     */
+    public void writeEPS(String filename) {
+	grapher.writeEPS(this, filename);
     }
     
 }// PlotHandle
