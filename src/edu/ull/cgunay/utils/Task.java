@@ -14,5 +14,5 @@ public interface Task extends Serializable {
      * @see Iteration#loop
      * @param o the iterating value
      */
-    void job(Object o);
+    void job(Object o) throws IterationException;
 }

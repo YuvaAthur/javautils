@@ -16,5 +16,5 @@ public interface TaskWithParam extends Serializable {
      * @param o the iterating value
      * @param p an <code>Object</code> value determined by the call to Iteration.loop 
      */
-    void job(Object o, Object[] p);
+    void job(Object o, Object[] p) throws IterationException;
 }
