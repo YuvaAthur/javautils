@@ -1,4 +1,4 @@
-package neuroidnet.utils;
+package edu.ull.cgunay.utils;
 
 import java.io.*;
 /**
@@ -14,5 +14,5 @@ public interface Task extends Serializable {
      * @see Iteration#loop
      * @param o the iterating value
      */
-    void job(Object o) throws IterationException;
+    void job(Object o) throws TaskException;
 }

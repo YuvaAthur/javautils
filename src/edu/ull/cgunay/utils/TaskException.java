@@ -1,5 +1,5 @@
 
-package neuroidnet.utils;
+package edu.ull.cgunay.utils;
 
 // $Id$
 /**
@@ -13,9 +13,9 @@ package neuroidnet.utils;
  * @version $Revision$ for this file.
  */
 
-abstract public class IterationException extends Exception  {
-    public IterationException () {
+abstract public class TaskException extends Exception  {
+    public TaskException () {
 	
     }
     
-}// IterationException
+}// TaskException
