@@ -16,7 +16,7 @@ import java.util.*;
  * @version $Revision$ for this file
  * @see Iteration
  */
-public class ParallelTask extends Simulation {
+public class ParallelTask implements Simulation {
 
     /**
      * The collection on which to iterate.

@@ -1,10 +1,12 @@
 
 package edu.ull.cgunay.utils;
 
+import java.io.*;
+
 // $Id$
 /**
  * A general steppable simulation abstraction.
- *
+ * <p>TODO: Shouldn't it be an interface?
  *
  * <p>Created: Sat Apr 27 18:37:05 2002
  * <p>Modified: $Date$
@@ -13,19 +15,17 @@ package edu.ull.cgunay.utils;
  * @version $Revision$ for this file.
  */
 
-abstract public class Simulation  {
-    public Simulation () { }
-
+public interface Simulation extends Serializable {
     /**
      * Step function of the simulator. 
      *
      */
-    abstract public void step();
+    void step();
 
     /**
      * Initialization function. Empty by default.
      *
      */
-    public void init() { }
+    void init();
     
 }// Simulation
