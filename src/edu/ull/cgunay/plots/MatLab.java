@@ -546,7 +546,7 @@ public class MatLab extends Grapher {
 	    out.close();
 	} catch (IOException e) {
 	    throw new Error("Cannot produce MatLab function file " + name +
-			    ".m in current directory.");
+			    ".m in current directory: " + e);
 	} // end of try-catch
 	
 	return "";
