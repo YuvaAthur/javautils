@@ -57,19 +57,6 @@ public class SpikePlot extends Plot  {
     }
 
     /**
-     * Delegates the request to the <code>Grapher</code> instance
-     * to do the appropriate things according to this subclass.
-     * (Only special to <code>SpikePlot</code>, not needed for simple Plot subclasses).
-     * @see Grapher#plot(Plot)
-     * @see Grapher#plot(SpikePlot)
-     * @return a <code>String</code> value
-     */
-    public String plot(Grapher grapher) {
-	this.grapher = grapher;	
-	return grapher.plot(this);
-    }
-
-    /**
      * Not applicable.
      * <p>TODO: Should be '-' to be compliant with multiplot propositions.
      * Need to define a vector(?) method to dump in the data instead of 
