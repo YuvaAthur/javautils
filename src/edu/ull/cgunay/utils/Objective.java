@@ -1,4 +1,4 @@
-package neuroidnet.utils;
+package edu.ull.cgunay.utils;
 public class Objective implements Runnable {
     Object o;
     ParallelTask lock;
@@ -23,7 +23,13 @@ public class Objective implements Runnable {
 		}
 		lock.waitcount--;
 	    }
-	    task.job(o);		// Out of synchronized, therefore concurrent
+
+	    try {
+		task.job(o);		// Out of synchronized, therefore concurrent		 
+	    } catch (TaskException e) {
+		throw new Error("" + e);
+	    } // end of try-catch
+
 	    synchronized (lock) { 
 		lock.runcount--;
 		/*if (lock.runcount == 0) {
