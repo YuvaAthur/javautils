@@ -29,6 +29,7 @@ public class GNUPlot extends Grapher {
      */
     public GNUPlot () throws GrapherNotAvailableException {	
 	super("gnuplot -display :0 -");
+	out.println("set grid");	// Sets grid mode
     }
 
     // overriding methods from edu.ull.cgunay.utils.plots.Grapher 
@@ -40,7 +41,7 @@ public class GNUPlot extends Grapher {
 
 	return
 	    "plot " + ((range!=null) ? "[" + assign("x", range(range)) + "] " : "") +
-	    "'-'" + getTitle(plot) + " with impulses" + "\n" +
+	    "'-'" + getLabel(plot) + " with impulses" + "\n" +
 	    new StringTask("", "EOF\n") {
 		Range range = plot.getRange();
 
@@ -65,12 +66,12 @@ public class GNUPlot extends Grapher {
 	return
 	    plot.preamble() +
 	    "plot " + ((range!=null) ? "[" + assign("t", range(range)) + "] " : "") +
-	    plot.body() + getTitle(plot) + "\n";
+	    plot.body() + getLabel(plot) + "\n";
     }
 
-    String getTitle(Plot plot) {
-	String title = plot.getTitle();
-	return (title != null) ? " title \"" + title + "\"" : "";
+    String getLabel(Plot plot) {
+	String label = plot.getLabel();
+	return (label != null) ? " title \"" + label + "\"" : "";
     }
 
     /**
@@ -80,7 +81,7 @@ public class GNUPlot extends Grapher {
      * @param plots a <code>Collection</code> value
      * @return a <code>String</code> value
      */
-    public String multiPlot(String title, Collection plots) {
+    public PlotHandle multiPlot(Collection plots, PrintStream out) {
 	// set title
 	// go into multiplot mode
 	// count number of plots, -> divide view into subplots
@@ -102,11 +103,11 @@ public class GNUPlot extends Grapher {
      *
      */
     public void close() {
-	grapherOut.println("exit");
+	out.println("exit");
     }
 
     public void setWindow(int windowNumber) {
-	grapherOut.println("set terminal x11 " + windowNumber);
+	out.println("set terminal x11 " + windowNumber);
     }
 
     /**
@@ -116,7 +117,7 @@ public class GNUPlot extends Grapher {
      * @param filename a <code>String</code> value
      */
     public void writeEPS(PlotHandle handle, String filename) {
-	grapherOut.println("set terminal postscript eps\n" +
+	out.println("set terminal postscript eps\n" +
 			   "set output \"" + filename + "\"\n" +
 			   plotToString(handle.getPlot()));
 	waitForResponse();

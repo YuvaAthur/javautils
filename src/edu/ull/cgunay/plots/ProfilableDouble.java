@@ -1,6 +1,9 @@
 
 package edu.ull.cgunay.utils.plots;
 
+import java.io.*;
+import java.util.*;
+
 // $Id$
 /**
  * Encapsulation of a <code>double</code> value as a <code>Profilable</code> entity.
@@ -12,7 +15,7 @@ package edu.ull.cgunay.utils.plots;
  * @version $Revision$ for this file.
  */
 
-public class ProfilableDouble extends Profilable  {
+public class ProfilableDouble extends Profilable implements Serializable, Comparable {
     double value;
 
     public ProfilableDouble (double value) {
@@ -25,5 +28,8 @@ public class ProfilableDouble extends Profilable  {
      * @return a <code>double</code> value
      */
     public double doubleValue() { return value; } 
-    
+
+    public int compareTo(Object that) {
+	return new Double(this.value).compareTo(new Double(((ProfilableDouble)that).value));
+    }
 }// ProfilableDouble

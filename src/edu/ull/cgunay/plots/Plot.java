@@ -1,6 +1,10 @@
 
 package edu.ull.cgunay.utils.plots;
 
+import java.util.*;
+import java.io.*;
+import edu.ull.cgunay.utils.*;
+
 // $Id$
 /**
  * Grapher independent description for plots. The plot is converted to 
@@ -36,13 +40,13 @@ package edu.ull.cgunay.utils.plots;
  * @see #range
  * @see Grapher
  */
-abstract public class Plot  {
+abstract public class Plot implements Serializable {
 
     /**
      * <code>Grapher</code> instance associated with the plot (if available).
      *
      */
-    protected Grapher grapher;
+    transient protected Grapher grapher;
     
     /**
      * Get the value of grapher.
@@ -62,7 +66,6 @@ abstract public class Plot  {
 
     /**
      * Plot title.
-     *
      */
     String title;
     
@@ -81,6 +84,70 @@ abstract public class Plot  {
     public void setTitle(String  v) {
 	this.title = v;
     }
+
+    /**
+     * Label of the dataset if it is the only one in this plot.
+     */
+    String label;
+    
+    /**
+     * Get the value of label.
+     * @return value of label.
+     */
+    public String getLabel() {
+	return label;
+    }
+    
+    /**
+     * Set the value of label.
+     * @param v  Value to assign to label.
+     */
+    public void setLabel(String  v) {
+	this.label = v;
+    }
+
+    /**
+     * Label for the x-axis.
+     */
+    String xLabel;
+    
+    /**
+     * Get the value of xLabel.
+     * @return value of xLabel.
+     */
+    public String getXLabel() {
+	return xLabel;
+    }
+    
+    /**
+     * Set the value of xLabel.
+     * @param v  Value to assign to xLabel.
+     */
+    public void setXLabel(String  v) {
+	this.xLabel = v;
+    }
+
+    /**
+     * Label for the x-axis.
+     */
+    String yLabel;
+    
+    /**
+     * Get the value of yLabel.
+     * @return value of yLabel.
+     */
+    public String getYLabel() {
+	return yLabel;
+    }
+    
+    /**
+     * Set the value of yLabel.
+     * @param v  Value to assign to yLabel.
+     */
+    public void setYLabel(String  v) {
+	this.yLabel = v;
+    }
+    
 
     /**
      * <code>Range</code> of the plot.
@@ -104,9 +171,39 @@ abstract public class Plot  {
 	this.range = v;
     }
 
-    public Plot (/*Grapher grapher,*/ String title, Range range) {
+    /**
+     * 	Find maximum range by iterating on all plots.
+     *
+     * @param plots a <code>Collection</code> value
+     * @return a <code>Range</code> value
+     */
+    static Range getMaxRange(Collection plots) {
+	final Range maximalRange = new Range(0, 0);
+
+	new UninterruptedIteration() {
+	    boolean first = true;
+	    public void job(Object o) {
+		Plot plot = (Plot)o;
+		Range plotRange = plot.getRange(); 
+
+		if (plotRange == null) 
+		    return;
+		
+		if (first) {
+		    maximalRange.setStart(plotRange.getStart());
+		    maximalRange.setEnd(plotRange.getEnd());
+		    first = false;
+		} else 
+		    maximalRange.add(plotRange);
+	    }
+	}.loop(plots);
+
+	return maximalRange;
+    }
+
+    public Plot (/*Grapher grapher,*/ String label, Range range) {
 	//this.grapher = grapher;
-	this.title = title;
+	this.label = label;
 	this.range = range;
     }
 

@@ -1,6 +1,9 @@
 
 package edu.ull.cgunay.utils.plots;
 
+import java.util.*;
+import edu.ull.cgunay.utils.*;
+
 // $Id$
 /**
  * Entity that associates a plot and a grapher at display time. This is the handle
@@ -21,7 +24,13 @@ public class PlotHandle  {
      * The description of the <code>Plot</code> encapsulated.
      *
      */
-    final Plot plot;
+    Plot plot;
+
+    /**
+     * The description of the <code>Plot</code> collection encapsulated.
+     *
+     */
+    Collection plots;
     
     /**
      * Get the value of plot.
@@ -60,7 +69,7 @@ public class PlotHandle  {
     }
 
     /**
-     * Association of the plot with the grapher.
+     * Association of a plot with the grapher.
      *
      * @param plot a <code>Plot</code> value
      * @param grapher a <code>Grapher</code> value
@@ -72,6 +81,27 @@ public class PlotHandle  {
 	this.windowNumber = windowNumber;
 
 	plot.setGrapher(grapher);
+    }
+
+    /**
+     * Association of a plot group with the grapher.
+     *
+     * @param plots a <code>Collection</code> value
+     * @param grapher a <code>Grapher</code> value
+     * @param windowNumber an <code>int</code> value
+     * @see Grapher#multiPlot
+     */
+    public PlotHandle (Collection plots, final Grapher grapher, int windowNumber) {
+	this.plots = plots;
+	this.grapher = grapher;
+	this.windowNumber = windowNumber;
+
+	new UninterruptedIteration() {
+	    public void job(Object o) {
+		Plot plot = (Plot) o;
+		plot.setGrapher(grapher); 
+	    }
+	}.loop(plots);
     }
 
     /**

@@ -43,17 +43,17 @@ abstract public class Grapher  {
      * The output stream that is connected to the grapher process.
      *
      */
-    public PrintWriter grapherOut;
+    public PrintWriter out;
 
     /**
      * Reader of the output stream of the grapher process.
      */
-    BufferedReader grapherMsg;
+    BufferedReader msg;
 
     /**
      * Reader of the error stream of the grapher process.
      */
-    BufferedReader grapherErr;
+    BufferedReader err;
 
     /**
      * Number of points on the graph, default is 100.
@@ -81,7 +81,7 @@ abstract public class Grapher  {
      * The number of the window in which the plot will appear.
      *
      */
-    private int windowNumber = 1;
+    protected int windowNumber = 1;
 
     /**
      * Spawns a grapher process (used from subclasses).
@@ -93,9 +93,9 @@ abstract public class Grapher  {
 	try {
 	    process = Runtime.getRuntime().exec(processName); 
 
-	    grapherOut = new PrintWriter(process.getOutputStream(), true);
-	    grapherMsg = new BufferedReader(new InputStreamReader(process.getInputStream()));
-	    grapherErr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+	    out = new PrintWriter(process.getOutputStream(), true);
+	    msg = new BufferedReader(new InputStreamReader(process.getInputStream()));
+	    err = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
 	} catch (IOException e) {
 	    throw new GrapherNotAvailableException("" + e);	    
@@ -158,10 +158,10 @@ abstract public class Grapher  {
      * @param title a <code>String</code> value
      * @param plots a <code>Plot[]</code> value
      * @return a <code>String</code> value
-     * @see #multiPlot(String,Collection)
+     * @see #multiPlot(Collection,PrintStream)
      */
-    public String multiPlot(String title, Plot[] plots) {
-	return multiPlot(title, Arrays.asList(plots));
+    public PlotHandle multiPlot(Plot[] plots, PrintStream out) {
+	return multiPlot(Arrays.asList(plots), out);
     }
 
     /**
@@ -173,7 +173,31 @@ abstract public class Grapher  {
      * @see GNUPlot#multiPlot
      * @see MatLab#multiPlot
      */
-    abstract public String multiPlot(String title, Collection plots);
+    abstract public PlotHandle multiPlot(Collection plots, PrintStream out);
+
+    /**
+     *
+     * @param title a <code>String</code> value
+     * @param plots a <code>Plot[]</code> value
+     * @param out a <code>PrintStream</code> value
+     * @return a <code>PlotHandle</code> value
+     * @see #superposedPlot(String,Collection,PrintStream)
+     */
+    public PlotHandle superposedPlot(final String title, Plot[] plots, final PrintStream out) {
+	return superposedPlot(title, Arrays.asList(plots), out);
+    }
+
+
+    /**
+     * Multiple datasets on the same axis. 
+     *
+     * @param title a <code>String</code> value
+     * @param plots a <code>Collection</code> value
+     * @param out a <code>PrintStream</code> value
+     * @return a <code>PlotHandle</code> value
+     */
+    abstract public PlotHandle superposedPlot(final String title, Collection plots,
+					      final PrintStream out);
 
     // tools
 
@@ -333,6 +357,9 @@ abstract public class Grapher  {
      * @see Plot#plot(Grapher)
      */
     public PlotHandle display(Plot plot, PrintStream out) {
+	if (out == null) 
+	    out = System.out;
+
 	PlotHandle handle = new PlotHandle(plot, this, windowNumber);
 
 	setWindow(windowNumber);
@@ -342,16 +369,12 @@ abstract public class Grapher  {
 	    (plot instanceof SpikePlot) ?
 	    plotToString((SpikePlot)plot) : plotToString(plot);
 	    
-	grapherOut.println(plotStr);
+	this.out.println(plotStr);
 
 	windowNumber++;
 
 	waitForResponse();	
-
-	if (out != null)
-	    out.println(response());
-	else 
-	    System.out.println(response());
+	out.println(response());
 
 	return handle;
     }
@@ -374,14 +397,14 @@ abstract public class Grapher  {
 	try {
 	    // Display error and output 
 	    retval += "Standard output from the grapher:\n";
-	    while (grapherMsg.ready()) {
-		retval += (char)grapherMsg.read();
-	    } // end of while (grapherMsg.ready())
+	    while (msg.ready()) {
+		retval += (char)msg.read();
+	    } // end of while (msg.ready())
 
 	    retval += "\nStandard error from the grapher:\n";
-	    while (grapherErr.ready()) {
-		retval += (char)grapherErr.read();
-	    } // end of while (grapherErr.ready())	     
+	    while (err.ready()) {
+		retval += (char)err.read();
+	    } // end of while (err.ready())	     
 	} catch (IOException e) {
 	    throw new RuntimeException("" + e); 
 	} // end of try-catch
@@ -402,10 +425,10 @@ abstract public class Grapher  {
 	    incr = 200;		// step size (in msecs)
 	
 	try {
-	    while (!grapherErr.ready() && !grapherMsg.ready() && time < until) {
+	    while (!err.ready() && !msg.ready() && time < until) {
 		time += incr;
 		wait(incr);	// Sleep some msecs
-	    } // end of while (!grapherErr.ready() && !grapherMsg.ready())
+	    } // end of while (!err.ready() && !msg.ready())
 	    
 	} catch (IOException e) {
 	    throw new RuntimeException("" + e); 

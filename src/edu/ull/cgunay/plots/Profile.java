@@ -21,11 +21,18 @@ import java.util.Observer;
  * @see Profilable
  */
 public class Profile extends TreeMap implements Observer, Serializable {
+
+    /**
+     * Constant to be added to range expressions for making the end inlusive.
+     *
+     */
+    static final double overhead = 0.01;
+
     /**
      * Entity to be observed and recorded.
      *
      */
-    Profilable entity;
+    protected Profilable entity;
 
     /**
      * Dummy constructor.
@@ -86,10 +93,10 @@ public class Profile extends TreeMap implements Observer, Serializable {
 	if (range == null) 
 	    return entrySet();	// if range == null	     
 
-	SortedMap headMap = headMap(new Double(range.getStart() + 0.01));
+	SortedMap headMap = headMap(new Double(range.getStart() + overhead));
 	Double
-	    end = new Double(range.getEnd() + 0.01),
-	    start = (headMap != null) ? (Double)headMap.lastKey() : new Double(range.getStart() + 0.01);
+	    end = new Double(range.getEnd() + overhead),
+	    start = (headMap != null) ? (Double)headMap.lastKey() : new Double(range.getStart() + overhead);
 	
 	return
 	    subMap(start, end).entrySet();
@@ -102,7 +109,8 @@ public class Profile extends TreeMap implements Observer, Serializable {
      * @return a <code>Range</code> value
      */
     public Range getRange() {
-	return new Range(((Double)firstKey()).doubleValue(), ((Double)lastKey()).doubleValue());
+	return new Range(((Double)firstKey()).doubleValue(),
+			 ((Double)lastKey()).doubleValue() + overhead);
     }
 
     // implementation of java.util.Observer interface

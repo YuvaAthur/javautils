@@ -2,6 +2,7 @@
 package edu.ull.cgunay.utils.plots;
 
 import java.util.*;
+import java.io.*;
 import java.lang.*;
 
 // $Id$
@@ -17,7 +18,7 @@ import java.lang.*;
  * @see Profile
  */
 
-abstract public class Profilable extends Observable implements Cloneable  {
+abstract public class Profilable extends Observable implements Cloneable, Serializable  {
 
     /**
      * Dummy constructor.
