@@ -2,7 +2,7 @@ package Utils;
 public interface TaskWithParam {
     /**
      * Method to be called by external task givers.
-     * @see Utils#loop
+     * @see Iteration#loop
      * @param o the iterating value
      * @param p an <code>Object</code> value determined by the call to Utils.loop 
      */
