@@ -1,5 +1,5 @@
 
-package neuroidnet.utils;
+package edu.ull.cgunay.utils;
 
 // $Id$
 /**
@@ -13,9 +13,26 @@ package neuroidnet.utils;
  * @version $Revision$ for this file.
  */
 
-public class BreakOutOfIterationException extends IterationException  {
+public class BreakOutOfIterationException extends TaskException  {
+    Object currentObject;
+
     public BreakOutOfIterationException () {
 	
+    }
+
+    /**
+     * Breaks the iteration and records the object which caused it.
+     * Retrieve it method <code>getValue()</code>.
+     *
+     * @param currentObject an <code>Object</code> value
+     * @see #getValue
+     */
+    public BreakOutOfIterationException (Object currentObject) {
+	this.currentObject = currentObject;
+    }
+
+    public Object getValue() {
+	return currentObject;
     }
     
 }// BreakOutOfIterationException
