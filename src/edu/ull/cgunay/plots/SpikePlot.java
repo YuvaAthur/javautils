@@ -1,11 +1,11 @@
 
-package neuroidnet.ntr.plots;
+package edu.ull.cgunay.utils.plots;
 
 import java.util.*;
 
 // $Id$
 /**
- * SpikePlot.java
+ * Plot of a collection of spike timings.
  *
  *
  * <p>Created: Mon Apr  8 17:50:01 2002
@@ -59,9 +59,9 @@ public class SpikePlot extends Plot  {
     /**
      * Delegates the request to the <code>Grapher</code> instance
      * to do the appropriate things according to this subclass.
-     * @see Grapher#plot(ProfilePlot)
+     * (Only special to <code>SpikePlot</code>, not needed for simple Plot subclasses).
+     * @see Grapher#plot(Plot)
      * @see Grapher#plot(SpikePlot)
-     * @see Grapher#plot(PotentialPlot)
      * @return a <code>String</code> value
      */
     public String plot(Grapher grapher) {
@@ -71,7 +71,9 @@ public class SpikePlot extends Plot  {
 
     /**
      * Not applicable.
-     *
+     * <p>TODO: Should be '-' to be compliant with multiplot propositions.
+     * Need to define a vector(?) method to dump in the data instead of 
+     * treating <code>SpikePlot</code>s specially.
      * @return a <code>String</code> value
      */
     public String body() { return null; }

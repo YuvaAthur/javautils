@@ -1,5 +1,5 @@
 
-package neuroidnet.ntr.plots;
+package edu.ull.cgunay.utils.plots;
 
 // $Id$
 /**
