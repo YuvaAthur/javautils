@@ -1,4 +1,5 @@
 package Utils;
+import java.io.*;
 
 // $Id$
 /**
@@ -8,7 +9,7 @@ package Utils;
  *
  * @author Cengiz Gunay
  * @version $Revision$ for this file
- * @see Neuroid.SynapseActivityTask
+ * @see Base.Neuroid.SynapseActivityTask
  */
 
 public interface TaskWithReturn extends Task {
