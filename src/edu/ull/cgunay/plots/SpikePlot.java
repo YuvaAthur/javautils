@@ -55,8 +55,6 @@ public class SpikePlot extends Plot  {
     /**
      * Delegates the request to the <code>Grapher</code> instance
      * to do the appropriate things according to this subclass.
-     * <p> TODO: get grapher here instead of constructor, thereby
-     * allowing flexibility in choosing different graphers for same plot.
      * @see Grapher#plot(ProfilePlot)
      * @see Grapher#plot(SpikePlot)
      * @see Grapher#plot(PotentialPlot)
