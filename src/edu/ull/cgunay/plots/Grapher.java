@@ -603,6 +603,43 @@ abstract public class Grapher  {
 
     }
 
+    /**
+     * For drawing a vertical bar on the x-axis.
+     *
+     */
+    public class VerticalBar extends Data {
+
+	/**
+	 * Create with a y-range parameter.
+	 *
+	 * @param label for the dataset
+	 * @param xValue point on x-axis
+	 * @param yRange upper and lower limits of the vertical bar.
+	 */
+	public VerticalBar(String label, double xValue, Range yRange) {
+	    super("default", label);
+
+	    Vector xAxis = new Vector(2);
+	    xAxis.add(new Double(xValue));
+	    xAxis.add(new Double(xValue));
+
+	    Vector yAxis = new Vector(2);
+	    yAxis.add(new Double(yRange.getStart()));
+	    yAxis.add(new Double(yRange.getEnd()));
+
+	    addVariable("xAxis", xAxis);
+	    addVariable("yAxis", yAxis);
+	}
+
+	public String xExpression() {
+	    return variable("xAxis"); 
+	}
+
+	public String yExpression() {
+	    return variable("yAxis"); 
+	}
+    }
+
     // tools
 
     /**
@@ -800,10 +837,10 @@ abstract public class Grapher  {
 
 	setWindow(windowNumber);
 
-	// Bad bad hack.. shame on java's incapability of polymorphism
-	String plotStr =
-	    (plot instanceof SpikePlot) ?
-	    plotToString((SpikePlot)plot) : plotToStringAlt(plot);
+	// TODO: should directly call recipe or make and axes factory
+	// list first and then send to plothandle. Also, at some point
+	// create the handle for printing, exporting, etc.
+	String plotStr = plotToStringAlt(plot);
 	    
 	this.out.println(plotStr);
 

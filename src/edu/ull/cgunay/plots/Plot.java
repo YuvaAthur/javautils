@@ -94,6 +94,16 @@ abstract public class Plot implements Serializable, HasAxisLabels {
     }
 
     /**
+     * Give title or label as part of description.
+     *
+     * @return a <code>String</code> value
+     */
+    public String toString() {
+	String id = title != null ? title : label;
+	return getClass().getName() + ": " + id;
+    }
+
+    /**
      * Label of the dataset if it is the only one in this plot.
      */
     String label;

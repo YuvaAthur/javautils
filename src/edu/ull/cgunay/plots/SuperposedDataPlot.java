@@ -4,6 +4,7 @@ package edu.ull.cgunay.utils.plots;
 import edu.ull.cgunay.utils.plots.Plot;
 import edu.ull.cgunay.utils.*;
 
+import java.util.List;
 import java.util.LinkedList;
 
 // $Id$
@@ -37,8 +38,18 @@ public class SuperposedDataPlot extends Plot  {
     }
 
     /**
-     * Creates an "errorbar" type dataset for the spike plot and
-     * associates with a single axis.
+     * Takes a <code>List</code> of datasets to plot.
+     *
+     * @param range a <code>Range</code> value
+     * @param datas a <code>List</code> value
+     */
+    public SuperposedDataPlot (Range range, List datas) {
+	super(null, range);
+	this.datas = (Grapher.Data[]) datas.toArray(new Grapher.Data[0]);
+    }
+
+    /**
+     * Combines given datasets to be displayed on a single axis.
      *
      * @param grapher a <code>Grapher</code> value
      * @return a <code>String</code> value
@@ -69,6 +80,7 @@ public class SuperposedDataPlot extends Plot  {
 		}
 	    };
 
+	// should be kept in plothandle!
 	axes = new LinkedList();
 	axes.add(axisFactory);
 

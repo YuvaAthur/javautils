@@ -165,7 +165,7 @@ public class MatLab extends Grapher {
 	 */
 	public String plotCommand(Data data) {
 	    String vectorDHandle = patterns.nextHandle();
-	    dataHandle = vectorDHandle + "(1)"; // legend handle is the first one!
+	    dataHandle = vectorDHandle + "(2)"; // legend handle is the second one!
 	    return assign(vectorDHandle,
 			  axisCommand + paren(data.xExpression() + ", "
 					      + data.yExpression() + ", "
@@ -273,7 +273,8 @@ public class MatLab extends Grapher {
 			public String getString(Collection c) {
 			    return
 				super.getString(c) +
-				command("legend" + paren(labelHandles + "], " + labelString));
+				command("legend" + paren(labelHandles + "], " + labelString +
+							 ", 0")); // best-position
 			}
 		    }.getString(this) + titleString(this) +
 		    xLabelString(this) + yLabelString(this);
