@@ -109,7 +109,7 @@ abstract public class Iteration implements Task {
     }
 
     /**
-     * Loop for <code>Iterator</code> values calling <code>Task</code>.
+     * Loop on <code>Iterator</code> values calling <code>Task</code>.
      *
      * @param i an <code>Iterator</code> value
      * @param t a <code>Task</code> value
@@ -130,7 +130,30 @@ abstract public class Iteration implements Task {
 	} catch (TaskException e) {
 	    throw new RuntimeException("Not supposed to happen");
 	} // end of catch
-	
+    }
+
+    /**
+     * Loop on <code>Object[]</code> values calling <code>Task</code>.
+     *
+     * @param array an <code>Object[]</code> value
+     * @param t a <code>Task</code> value
+     * @exception BreakOutOfIterationException if an error occurs
+     */
+    public static void loop(Object[] array, Task t) throws BreakOutOfIterationException {
+	try {
+	    int size = array.length;
+	    for (int i = 0; i < size; i++) {
+		try {
+		    t.job(array[i]); 
+		} catch (RemoveFromIterationException e) {
+		    throw new Error("Not supported for arrays. Use Collections.");
+		} // end of try-catch
+	    } // end of while (i.hasNext())
+	} catch (BreakOutOfIterationException e) {
+	    throw e;
+	} catch (TaskException e) {
+	    throw new RuntimeException("Not supposed to happen");
+	} // end of catch
     }
 
     /**

@@ -29,6 +29,14 @@ abstract public class UninterruptedIteration extends Iteration  {
 	} // end of try-catch
     }
 
+    public static void loop(Object[] array, Task t) {
+	try {
+	    Iteration.loop(array, t); 
+	} catch (BreakOutOfIterationException e) {
+	    // just return, iteration is terminated	    
+	} // end of try-catch	
+    }
+
     static public void loop(Collection c, Task t) {
 	loop(c.iterator(), t);
     }
