@@ -7,9 +7,9 @@ import neuroidnet.ntr.plots.Plot;
 
 // $Id$
 /**
- * Plot.java
+ * Grapher independent description for plots.
  *
- *
+ * @see Grapher
  * <p>Created: Mon Apr  8 17:35:11 2002
  * <p>Modified: $Date$
  *
@@ -20,7 +20,6 @@ import neuroidnet.ntr.plots.Plot;
 abstract public class Plot  {
     Grapher grapher;
     String title;
-
 
     /**
      * <code>Range</code> of the plot.
@@ -44,8 +43,8 @@ abstract public class Plot  {
 	this.range = v;
     }
 
-    public Plot (Grapher grapher, String title, Range range) {
-	this.grapher = grapher;
+    public Plot (/*Grapher grapher,*/ String title, Range range) {
+	//this.grapher = grapher;
 	this.title = title;
 	this.range = range;
     }
@@ -66,7 +65,8 @@ abstract public class Plot  {
      * @see Grapher#plot(PotentialPlot)
      * @return a <code>String</code> value
      */
-    public String plot() {
+    public String plot(Grapher grapher) {
+	this.grapher = grapher;	
 	return grapher.plot(this);
     }
 

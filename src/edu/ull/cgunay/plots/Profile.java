@@ -8,9 +8,10 @@ import java.util.Observer;
 
 // $Id$
 /**
- * Representation of an entity that changes through time. Currently a simple
- * <code>double</code> value. Each pair denotes a time and an  associated value
+ * Keeps track of the time profile of an entity that changes through time.
+ * Saves pairs consisting of a time and an  associated value
  * for the entity.
+ * Currently saves a simple <code>double</code> value for each time instant.
  *
  * <p>Created: Mon Apr  8 17:07:04 2002
  * <p>Modified: $Date$
