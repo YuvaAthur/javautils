@@ -4,14 +4,19 @@ package edu.ull.cgunay.utils;
 import java.util.*;
 
 /**
- * Parallel analog of an iteration where a given task is executed on 
- * each of the items of a collection concurrently. The <code>init()</code>
- * method creates threads for all items and the <code>step()</code> method
- * contains the synchronization algorithm required to start and end all tasks
- * concurrently.
- * <p>Subsequent calls to <code>step()</code> is mutually exclusive
- * by ensuring that the the new step does
- * not start until the previous step is completed.
+ * Parallel analog of an iteration where a given task is executed on
+ * each of the items of a collection concurrently. The
+ * <code>init()</code> method creates threads for all items and the
+ * <code>step()</code> method contains the synchronization algorithm
+ * required to start and end all tasks
+ * concurrently. <code>stop()</code> terminates all threads and
+ * therefore relinquishes resources.  
+ *
+ * <p>Subsequent calls to <code>step()</code> is mutually exclusive by
+ * ensuring that the the new step does not start until the previous
+ * step is completed.  
+ *
+ * <p>TODO: Make it more expressive.
  * @author <a href="mailto:cengiz@ull.edu">Cengiz Gunay</a>
  * @version $Revision$ for this file
  * @see Iteration
@@ -65,6 +70,11 @@ public class ParallelTask implements Simulation {
     }
 
     /**
+     * Group together the threads in order to terminate them at once.
+     */
+    ThreadGroup threads = new ThreadGroup("ThreadGroup of " + this);
+
+    /**
      * Start a new thread containing the <code>Objective</code> runnable
      * for each element in the collection.
      * @see Objective
@@ -73,7 +83,7 @@ public class ParallelTask implements Simulation {
 	// iterate over elements and associate threads
 	UninterruptedIteration.loop(collection, new Task() {
 		public void job(Object o) {
-		    new Thread(new Objective(ParallelTask.this, task, o)).start();
+		    new Thread(threads, new Objective(ParallelTask.this, task, o)).start();
 		}
 	    });
     }
@@ -113,9 +123,16 @@ public class ParallelTask implements Simulation {
 		wait(10);
 	    }
 	} catch (InterruptedException e) {
-	    System.out.println("interrupted!!!" + e);
-	    e.printStackTrace();
+	    throw new Error("interrupted!!!" + e);
 	}
 
+    }
+
+    /**
+     * Terminates all threads, presumably releasing all resources.
+     *
+     */
+    public void stop() {
+	threads.interrupt();
     }
 }

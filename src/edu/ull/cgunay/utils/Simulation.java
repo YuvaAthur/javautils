@@ -7,7 +7,6 @@ import java.io.*;
 // See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
  * A general steppable simulation abstraction.
- * <p>TODO: Shouldn't it be an interface?
  *
  * <p>Created: Sat Apr 27 18:37:05 2002
  * <p>Modified: $Date$
@@ -24,9 +23,15 @@ public interface Simulation extends Serializable {
     void step();
 
     /**
-     * Initialization function. Empty by default.
+     * Initialization function. 
      *
      */
     void init();
+
+    /**
+     * Releases resources, leaving it un<code>step</code>pable.
+     *
+     */
+    void stop();
     
 }// Simulation
