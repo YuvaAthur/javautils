@@ -63,5 +63,27 @@ public class Range  {
 	this.start = start;
 	this.end = end;
     }
+
+    /**
+     * Adds given range to this one, resulting in enlarging this range.
+     *
+     * @param range a <code>Range</code> value
+     */
+    public void add(Range range) {
+	start = Math.min(start, range.getStart());
+	end = Math.max(end, range.getEnd());
+    }
+
+    /**
+     * Returns the union of two ranges, that is the maximal range including both ranges.
+     *
+     * @param r1 a <code>Range</code> value
+     * @param r2 a <code>Range</code> value
+     * @return a <code>Range</code> value
+     */
+    public static Range max(Range r1, Range r2) {
+	return new Range(Math.min(r1.getStart(), r2.getStart()),
+			 Math.max(r1.getEnd(), r2.getEnd()));
+    }
     
 }// Range
