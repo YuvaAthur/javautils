@@ -371,7 +371,7 @@ abstract public class Grapher  {
      * Each dataset that can be added to an <code>Axis</code>. To be
      * instantiated by the <code>Plot</code>.
      */
-    abstract class Data {
+    abstract class Data implements Serializable {
 	/**
 	 * Variables used by this plot data definition. name->Range or
 	 * name->vector pairs.

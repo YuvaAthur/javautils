@@ -169,8 +169,10 @@ public class MatLab extends Grapher {
 	    return assign(vectorDHandle,
 			  axisCommand + paren(data.xExpression() + ", "
 					      + data.yExpression() + ", "
-					      + ((ErrorData)data).minExpression() + ", "
-					      + ((ErrorData)data).maxExpression() + ", "
+					      + sub(data.yExpression(),
+						    ((ErrorData)data).minExpression()) + ", "
+					      + sub(((ErrorData)data).maxExpression(),
+						    data.yExpression()) + ", "
 					      + patterns.nextPattern()));
 	}
     }
