@@ -1,0 +1,13 @@
+import edu.ull.cgunay.utils.plots.*;
+
+prof = new Profile();
+
+prof.put(new Double(1), new ProfilableDouble(2));
+prof.put(new Double(2), new ProfilableDouble(8));
+prof.put(new Double(3), new ProfilableDouble(1));
+prof.put(new Double(4), new ProfilableDouble(3));
+
+p = new ProfilePlot(prof);
+
+g = new MatLab();
+g.display(p, null);
