@@ -11,22 +11,6 @@ import edu.ull.cgunay.utils.*;
  * Grapher independent description for plots. The plot is converted to 
  * a grapher specific String representation when the <code>plot(Grapher)</code> method 
  * is invoked. 
- * <p>In general the plot is assumed to be a <code>String</code> composed of a preamble,
- * a plot command and some post commands or data.
- * The <code>preamble()</code> method represents the information required before the actual plot
- * command, and the <code>body()</code> method represents the part that will appear as the body of
- * the plot command. The range of the plot that will appear as part of the plot command is
- * kept as the <code>range</code> attribute.
- * <p>As a simple example here is how to plot the y = t + 5 graph: <br>
- * (The x-axis is called "t" by default)
- * <blockquote><pre>
- * class MyPlot extends Plot {
- *   MyPlot(Range range) { super("My plot!", range); }
- *   String body() {
- *     return add("t","5");
- *   }
- * }
- * </pre></blockquote>
  * <p> See the description in the <code>Grapher</code> class on how to display the plot.
  * Other <code>private</code> methods in this class are simply delegated to the
  * associated <code>Grapher</code> instance (if available).
@@ -35,9 +19,8 @@ import edu.ull.cgunay.utils.*;
  *
  * @author <a href="mailto:cengiz@ull.edu">Cengiz Gunay</a>
  * @version $Revision$ for this file.
+ * @see SimplePlot
  * @see #plot(Grapher)
- * @see #preamble
- * @see #body
  * @see #range
  * @see Grapher
  */
@@ -66,9 +49,10 @@ abstract public class Plot implements Serializable, HasAxisLabels {
     }    
 
     /**
-     * The list of axes contained in the plot. TODO: maybe should go
-     * to the <code>grapher</code> dependent part, the
-     * <code>PlotHandle</code>.
+     * The list of <code>Grapher.Axis</code>'s contained in the
+     * plot. 
+     * <p>TODO: maybe should go to the <code>grapher</code>
+     * dependent part, the <code>PlotHandle</code>.
      */
     List axes;
 
@@ -211,18 +195,19 @@ abstract public class Plot implements Serializable, HasAxisLabels {
     }
 
     /**
-     * 	Find maximum range by iterating on all plots.
+     * 	Find maximum range by iterating on all objects implementing
+     * 	<code>HasAxisLabels</code>.
      *
-     * @param plots a <code>Collection</code> value
-     * @return a <code>Range</code> value
+     * @param plots a <code>Collection</code> of <code>HasAxisLabels</code> objects
+     * @return the maximal <code>Range</code> in the list
      */
-    static Range getMaxRange(Collection plots) {
+    static Range getMaxRange(HasAxisLabels[] plots) {
 	final Range maximalRange = new Range(0, 0);
 
 	new UninterruptedIteration() {
 	    boolean first = true;
 	    public void job(Object o) {
-		Plot plot = (Plot)o;
+		HasAxisLabels plot = (HasAxisLabels)o;
 		Range plotRange = plot.getRange(); 
 
 		if (plotRange == null) 
@@ -240,10 +225,22 @@ abstract public class Plot implements Serializable, HasAxisLabels {
 	return maximalRange;
     }
 
+    static Range getMaxRange(Collection plots) {
+	return getMaxRange((HasAxisLabels[]) plots.toArray(new HasAxisLabels[0]));
+    }
+
     public Plot (/*Grapher grapher,*/ String label, Range range) {
 	//this.grapher = grapher;
 	this.label = label;
 	this.range = range;
+    }
+
+    /**
+     * Calls other constructors with <code>null</code> params.
+     *
+     */
+    public Plot () {
+	this(null, null);
     }
 
     /**
@@ -261,8 +258,6 @@ abstract public class Plot implements Serializable, HasAxisLabels {
      * <code>Grapher</code> instance.
      * @deprecated Grapher handles things by directly calling <code>Grapher.plotToString()</code>
      * and using the <code>PlotHandle</code>
-     * @see Grapher#plot(Plot)
-     * @see Grapher#plot(SpikePlot)
      * @return a <code>String</code> value
      */
     public String plot(Grapher grapher) {

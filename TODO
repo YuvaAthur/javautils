@@ -1,11 +1,13 @@
+- use ant for creating the documentation
+- rename HasAxisLabels to AxisProperties
 - put LGPL license and fix copyright info, rename file to COPYING
 - make Axes and a MultiAxesPlot that takes a list of axis to plot
-- move package plots out from under utils
+	- for this create a AxisTemplate that can be bassed in an Axes list to MultiAxesPlot
 - implement everything for gnuplot, too
++ move package plots out from under utils
 + Make ErrorData and then a SingleDataPlot instead of ErrorBarPlot
 + add superposed plot
 + add decorations
-
 + added errorbar plots
 + Make a recipe function from Plot that commands the Grapher activity to create the graph
 	+ make a subclass of grapher to be instantiated from Plot using grapher caps (instead of body, preamble, etc.)

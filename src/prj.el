@@ -1,4 +1,5 @@
 (jde-project-file-version "1.0")
 (jde-set-variables
  '(jde-gen-class-buffer-template (quote ("(funcall jde-gen-boilerplate-function) 'n" "(jde-gen-get-package-statement)" "\"// $\" \"Id$\" 'n" "\"// See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt\" 'n" "\"/**\" 'n" "\" * \"" "(file-name-nondirectory buffer-file-name) 'n" "\" *\" 'n" "\" *\" 'n" "\" * <p>Created: \" (current-time-string) 'n" "\" * <p>Modified: $\" \"Date$\" 'n" "\" *\" 'n" "\" * @author <a href=\\\"mailto:\" (eval user-mail-address) \"\\\">\" (user-full-name) \"</a>\"'>'n" "\" * @version $\" \"Revision$ for this file.\" 'n" "\" */\" 'n>" "'n>" "\"public class \"" "(file-name-sans-extension (file-name-nondirectory buffer-file-name))" "\" \" (jde-gen-get-extend-class)" "\" {\"  'n>" "" "\"public \"" "(file-name-sans-extension (file-name-nondirectory buffer-file-name))" "\" ()\"" "\" {\"  'n>" "" "'p 'n>" "\"}\">" "'n>" "(jde-gen-get-interface-implementation)" "'n>" "\"}\">" "\"// \"" "(file-name-sans-extension (file-name-nondirectory buffer-file-name))" "'n>")))
- '(jde-compile-option-sourcepath (quote ("~/research/javautils/src"))))
+ '(jde-compile-option-sourcepath (quote ("~/research/javautils/src")))
+ '(jde-compile-option-directory "~/research/javautils/classes"))

@@ -9,7 +9,7 @@ import java.util.*;
 // $Id$
 // See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
- * ErrorBarPlot.java
+ * A simple plot that features a single <code>ErrorDAta</code>.
  *
  *
  * <p>Created: Mon Nov 11 15:08:58 2002

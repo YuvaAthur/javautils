@@ -138,9 +138,10 @@ abstract public class Grapher  {
     /**
      * Generic plot that calls <code>Plot.body()</code> as the body.
      * <!-- Needs to be redefined in subclasses and it is an error to call this function here.-->
+     * @deprecated
      * @param plot a <code>Plot</code> value
      * @return a <code>String</code> value
-     * @see Plot#body
+     * @see SimplePlot#body
      */
     abstract public String plotToString(SimplePlot plot);/* {
 	throw new Error("This method is only defined in subclasses!");
@@ -149,9 +150,9 @@ abstract public class Grapher  {
     /**
      * Returns a <code>String</code> representation of a spike
      * plot for the <code>Grapher</code>.
+     * @deprecated
      * @param plot a <code>SpikePlot</code> value
      * @return a <code>String</code> value
-     * @see GNUPlot#plot(SpikePlot)
      */
     abstract public String plotToString(SpikePlot plot); 
 
@@ -343,6 +344,65 @@ abstract public class Grapher  {
 	abstract String getString();
     }
 
+
+
+    /**
+     * Factory method fro creating <code>MultiAxes</code> instances.
+     *
+     * @param axes a <code>Grapher.Axis[]</code> value
+     * @return a <code>Grapher.MultiAxes</code> value
+     */
+    abstract public Grapher.MultiAxes createMultiAxes(Grapher.Axis[] axes);
+
+    /**
+     * Factory method fro creating <code>MultiAxes</code> instances.
+     *
+     * @param axes a <code>List</code> of <code>Grapher.Axis[]</code> values
+     * @return a <code>Grapher.MultiAxes</code> value
+     */
+    abstract public Grapher.MultiAxes createMultiAxes(List axes);
+
+    /**
+     * An object that combines multiple axes.
+     * @see Grapher.Axis
+     */
+    abstract protected class MultiAxes {
+	/**
+	 * Axes to be plotted. TODO: need to define visual organization.
+	 *
+	 */
+	Axis[] axes;
+
+	/**
+	 * Creates a new <code>MultiAxes</code> instance. By default
+	 * creates a vertically aligned list of axes.
+	 *
+	 * @param axes an <code>Axis[]</code> value
+	 */
+	MultiAxes(Axis[] axes) {
+	    this.axes = axes;
+	}
+
+	/**
+	 * Convenience constructor that calls other constructor.
+	 *
+	 * @param axes a <code>List</code> value
+	 * @see #MultiAxes(Grapher.Axis[])
+	 */
+	MultiAxes(List axes) {
+	    this.axes = (Axis[]) axes.toArray(new Axis[0]);
+	}
+
+	/**
+	 * The code to combine codes for separate axis in a single
+	 * window should be written here in subclasses for specific
+	 * graphers.
+	 *
+	 * @return a <code>String</code> value
+	 */
+	abstract String getString();
+    }
+
     /**
      * Hash to hold name->datatype values for a grapher.
      */
@@ -373,8 +433,8 @@ abstract public class Grapher  {
 	String axisCommand;
 	    
 	/**
-	 * Maybe for additional properties? Used by <code>body()</code>.
-	 * @see Grapher.Data#body
+	 * Maybe for additional properties? Used by <code>...Expression()</code>.
+	 * @see Grapher.Data#yExpression
 	 */
 	String propertyName;
 
@@ -423,6 +483,11 @@ abstract public class Grapher  {
 	 * Put initialization code in this method.
 	 */
 	void init() {}
+
+	/**
+	 * Put preambles in this method.
+	 */
+	String preamble() { return ""; }
 
 	/**
 	 * Add a range variable to <code>variables</code>. <p> TODO:
@@ -519,7 +584,7 @@ abstract public class Grapher  {
      * a general number of data points selection, see
      * <code>ProfileData</code>.
      * @see Profile
-     * @see ProfileData
+     * @see Grapher.ProfileData
      */
     public class PreciseProfileData extends Data {
 
@@ -596,7 +661,7 @@ abstract public class Grapher  {
      * Data structure for generating profile plots, where the
      * precision can be defined as the total number of points on the
      * plot. This allows optimal use of resources for complex data.
-     * @see PreciseProfileData
+     * @see Grapher.PreciseProfileData
      */
     public class ProfileData extends Data {
 

@@ -57,8 +57,8 @@ public class GNUPlot extends Grapher {
 
     /**
      * gnuplot specific plotting command, calls plot.body().
-     * 
-     * @see Plot#body
+     * @deprecated See <code>MatLab</code>
+     * @see MatLab#plotToStringAlt
      * @param plot a <code>Plot</code> value
      * @return a <code>String</code> value
      */

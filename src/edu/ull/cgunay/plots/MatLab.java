@@ -228,7 +228,7 @@ public class MatLab extends Grapher {
      * Matlab specific plotting command. Calls Plot.body().
      * @deprecated
      * @see #plotToStringAlt
-     * @see Plot#body
+     * @see SimplePlot#body
      * @param plot a <code>Plot</code> value
      * @return a <code>String</code> value
      */
@@ -345,24 +345,74 @@ public class MatLab extends Grapher {
 			} // end of else
 			
 		    }
-		}.getString(data.getVariables().entrySet());
+		}.getString(data.getVariables().entrySet()) +
+		data.preamble(); // preamble at the end
 	}
 	}
 
     /**
+     * Convenience method to get instance of <code>MultiAxes</code> defined
+     * <i>here</i>.
+     */
+    public Grapher.MultiAxes createMultiAxes(Grapher.Axis[] axes) {
+	return new MultiAxes(axes);
+    }
+
+    /**
+     * Convenience method to get instance of <code>MultiAxes</code> defined
+     * <i>here</i>.
+     */
+    public Grapher.MultiAxes createMultiAxes(List axes) {
+	return new MultiAxes(axes);
+    }
+
+
+    class MultiAxes extends Grapher.MultiAxes {
+
+	MultiAxes(Grapher.Axis[] axes) {
+	    super(axes);
+	}
+
+	MultiAxes(List axes) {
+	    super(axes);
+	}
+
+	/**
+	 * Iterates over all contained <code>Axis</code>'s to create
+	 * the multiaxes figure.
+	 *
+	 * @return a <code>String</code> value
+	 */
+	String getString() {
+	    return
+		new StringTask("", "") {	
+		    int thisPlot = 1;
+		    int noOfPlots = axes.length;
+
+		    public void job(Object o) {
+			Grapher.Axis axis = (Grapher.Axis)o;
+			// Remove all but last bottom labels in MatLab graphs
+			// (overwrites each other)
+			if (thisPlot != noOfPlots) 
+			    axis.setXLabel(null); 
+			
+			super.job("subplot(" + noOfPlots + ", 1, " + thisPlot++ + ");\n" +
+				  axis.getString());
+		    }
+		}.getString(axes); 
+	}
+    }
+
+    /**
      * Alternative to <code>plotToString</code>, supposed to replace it
      * soon.
-     *
+     * <p>TODO: Should it stay in Grapher?
      * @param plot a <code>Plot</code> value
      * @return a <code>String</code> value
      */
     public String plotToStringAlt(Plot plot) {
-	//Range range = plot.getRange();
-
 	return plot.recipe(this);
     }
-
-    
 
     /**
      * Returns a proper dataset label statement in MatLab if label
