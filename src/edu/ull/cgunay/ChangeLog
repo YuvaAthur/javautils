@@ -1,3 +1,8 @@
+2003-05-16  Cengiz Gunay  <cengiz@ull.edu>
+
+	* plots/MultiDataPlot.java (Repository): For creating
+	multiple-axis multiple-data plots.
+
 2002-11-24  Cengiz Gunay  <cengiz@ull.edu>
 
 	* utils/plots/Grapher.java (Repository): Added a vertical bar
