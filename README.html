@@ -1,0 +1,487 @@
+RFC: Proposing a high level iteration facility based on Collections
+
+<p>I am requesting for comments for an experimental package I developed for high level iteration facilities based on the Java 2 Collections. 
+
+<p>Basically, the package provides an interface <code>Task</code> that has a single method <code>job()</code> which is called for every element in a given collection. There are some static methods for using this kind of scheme and iterating over collections. An example would be:
+<pre>
+ Iteration.loop(collection, new Task() {
+          public void job(Object o) {
+            // do something on o here
+          }
+        });</pre>
+        
+<p>Now you may wonder what is the use of going into this much trouble when I can just get an iterator and do the same thing? Well, creating a class that represents the whole iteration opens a number of new possibilities. You can now have methods and variables exclusive for this operation and reuse it. You can even subclass it for variants. This proved very useful in my application when I developed the StringTask class that is available in the same package.
+
+<p>Nevertheless, you can see it for yourself that we've got rid of the iterator and the condition checking that appears in conventional loop constructs. For details you can look at the <a href="http://www.cacs.louisiana.edu/~cxg9789/javautils/edu/ull/cgunay/utils/Iteration.html"><code>Iteration</code></a> and <a href="http://www.cacs.louisiana.edu/~cxg9789/javautils/edu/ull/cgunay/utils/StringTask.html"><code>StringTask</code></a>.
+
+<p>You can browse the <a href="http://www.cacs.louisiana.edu/~cxg9789/javautils/">javadoc</a> and the code is available for download from <a href="http://www.cacs.louisiana.edu/~cxg9789">my home page</a>.
+
+<p>I was wondering if you Java developers would find such a scheme useful. Thanks for your interest..
+
+----------------------------------------
+Same posting but in JDC forum syntax:
+----------------------------------------
+
+I am requesting for comments for an experimental package I developed providing a high level facility for iteration on Java 2 Collections.
+
+Basically, the package provides an interface Task that has a single method job() which is called for every element in a given collection. There are some static methods for using this kind of scheme and iterating over collections. An example would be: 
+[code]
+Iteration.loop(collection, new Task() {
+    public void job(Object o) {
+      // do something on o here
+    }
+  });
+[/code]
+Now you may wonder what is the use of going into this much trouble when I can just get an iterator and do the same thing? Well, creating a class that represents the whole iteration opens a number of new possibilities. You can now have methods and variables exclusive for the specific iteration and reuse it. You can even subclass it for variants. This especially proved very useful in my application when I developed the StringTask class that is available in the same package.
+
+Moreover, you can see it for yourself that we've got rid of the iterator and the condition checking that appears in conventional loop constructs. For details you can look at the [b]Iteration[/b] and [b]StringTask[/b] classes under the [b]ull.edu.cgunay.utils[/b] package.
+
+You can browse the javadoc at http://www.cacs.louisiana.edu/~cxg9789/javautils/ and the code is available for download from http://www.cacs.louisiana.edu/~cxg9789.
+
+I was wondering if you Java developers would find such a scheme useful?
+
+----------------------------------------
+Another post following a discussion:
+----------------------------------------
+Here's a program to measure the time profile of my approach inspired by the posts by [i]smiths[/i]:
+[code]
+import java.util.*;
+import edu.ull.cgunay.utils.*;
+
+public class Loops {
+    public void loop1(String [] arr) {
+	int size = arr.length;
+	for (int i = 0; i < size; i++) {
+	    String str = arr[i]; //do something.
+	}
+    }
+
+    public void loop2(List list) {
+	int size = list.size();
+	for (int i = 0; i < size; i++) {
+	    Object obj = list.get(i); //do something
+	}
+    }
+
+    public void loop3(Collection coll) {
+	Iterator it = coll.iterator();
+	while (it.hasNext()) {
+	    Object obj = it.next(); // do something
+	}
+    }
+
+    Task task = new Task() {
+	    public void job(Object obj) { } // do something.
+	};
+
+    Task finalTask = new Task() {
+	    final public void job(Object obj) { } // do something.
+	};
+
+    public void loop4(Collection coll) {
+	UninterruptedIteration.loop(coll, new Task() {
+		public void job(Object obj) { } // do something.
+	    });
+    }
+
+    public void loop6(Collection coll) {
+	UninterruptedIteration.loop(coll, task);
+    }
+
+    public void loop7(Collection coll) {
+	UninterruptedIteration.loop(coll, new Task() {
+		final public void job(Object obj) { } // do something.
+	    });
+    }
+
+    public void loop5(Collection coll) {
+	Iterator it = coll.iterator();
+	try {
+	    while (it.hasNext()) 
+		task.job(it.next());
+	} catch (TaskException e) {
+	    
+	} // end of try-catch
+    }
+
+    public void loop8(Collection coll) {
+	UninterruptedIteration.loop(coll, finalTask);
+    }
+
+    public void loop9(String[] arr) {
+	UninterruptedIteration.loop(arr, finalTask);
+    }
+
+    void callee() {}
+    final void finalCallee() {}
+
+    public void call1() {
+	callee();
+    }
+
+    public void call2() {
+	callee();
+	callee();
+	callee();
+	callee();
+    }
+
+    public void call3() {
+	finalCallee();
+    }
+
+    public void test() {
+	String[] array = {"1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1",
+			  "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1",
+			  "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1"};
+	long start;
+	final int TIMES = 10000;
+
+	start = System.currentTimeMillis();
+	for (int i = 0; i < TIMES; i++) 
+	    loop1(array); 
+	System.out.print("array:\t\t");
+	System.out.println(((double)System.currentTimeMillis() - start)/TIMES + " msec/call.");
+
+	List list = new LinkedList(Arrays.asList(array));
+	start = System.currentTimeMillis();
+	for (int i = 0; i < TIMES; i++) 
+	    loop2(list);
+	System.out.print("list:\t\t");
+	System.out.println(((double)System.currentTimeMillis() - start)/TIMES + " msec/call.");
+
+	start = System.currentTimeMillis();
+	for (int i = 0; i < TIMES; i++) 
+	    loop3(list);
+	System.out.print("it:\t\t");
+	System.out.println(((double)System.currentTimeMillis() - start)/TIMES + " msec/call.");
+
+	start = System.currentTimeMillis();
+	for (int i = 0; i < TIMES; i++) 
+	    loop4(list);
+	System.out.print("newTask:\t");
+	System.out.println(((double)System.currentTimeMillis() - start)/TIMES + " msec/call.");
+
+	start = System.currentTimeMillis();
+	for (int i = 0; i < TIMES; i++) 
+	    loop5(list);
+	System.out.print("expTask:\t");
+	System.out.println(((double)System.currentTimeMillis() - start)/TIMES + " msec/call.");
+
+	start = System.currentTimeMillis();
+	for (int i = 0; i < TIMES; i++) 
+	    loop6(list);
+	System.out.print("UI Task:\t");
+	System.out.println(((double)System.currentTimeMillis() - start)/TIMES + " msec/call.");
+
+	start = System.currentTimeMillis();
+	for (int i = 0; i < TIMES; i++) 
+	    loop7(list);
+	System.out.print("UI new finalTask:\t");
+	System.out.println(((double)System.currentTimeMillis() - start)/TIMES + " msec/call.");
+
+	start = System.currentTimeMillis();
+	for (int i = 0; i < TIMES; i++) 
+	    loop8(list);
+	System.out.print("UI finalTask:\t");
+	System.out.println(((double)System.currentTimeMillis() - start)/TIMES + " msec/call.");
+
+	start = System.currentTimeMillis();
+	for (int i = 0; i < TIMES; i++) 
+	    call1();
+	System.out.print("one call:\t");
+	System.out.println(((double)System.currentTimeMillis() - start)/TIMES + " msec/call.");
+
+	start = System.currentTimeMillis();
+	for (int i = 0; i < TIMES; i++) 
+	    call2();
+	System.out.print("four calls:\t");
+	System.out.println(((double)System.currentTimeMillis() - start)/TIMES + " msec/call.");
+
+	start = System.currentTimeMillis();
+	for (int i = 0; i < TIMES; i++) 
+	    call3();
+	System.out.print("final call:\t");
+	System.out.println(((double)System.currentTimeMillis() - start)/TIMES + " msec/call.");
+
+    }
+
+    public static void main (String[] args) {
+	new Loops().test();
+
+    } // end of main ()
+    
+}
+[/code]
+
+However ugly the repetitions may look, I thought that this is necessary for correctly measuring the time it takes to call each function.
+
+[b]Method:[/b]
+loop1-5 are the same as in [i]smiths[/i]'s original post. The difference here is that it is using valid calls to my API and their measurements with:
+ - either a newly [b]Task[/b] created everytime in the function versus reusing one in the wrapping class that is created only once.
+ - using [b]final[/b] modifiers to encourage the JIT compiler to inline the [b]job[/b] method.
+ - separate experiments for measuring call times to ordinary methods versus [b]final[/b] methods.
+
+[b]Initial Results:[/b]
+Since the values are fluctuating, the program is run three times to give you an idea:
+array:		0.0043 msec/call.
+list:		0.0314 msec/call.
+it:		0.0165 msec/call.
+newTask:	0.0391 msec/call.
+expTask:	0.0229 msec/call.
+UI Task:	0.0245 msec/call.
+UI newTask:	0.0322 msec/call.
+UI finalTask:	0.0221 msec/call.
+one call:	0.0029 msec/call.
+four calls:	0.0011 msec/call.
+final call:	3.0E-4 msec/call.
+
+array:		0.0051 msec/call.
+list:		0.025 msec/call.
+it:		0.0275 msec/call.
+newTask:	0.0291 msec/call.
+expTask:	0.0284 msec/call.
+UI Task:	0.0224 msec/call.
+UI newTask:	0.0298 msec/call.
+UI finalTask:	0.023 msec/call.
+one call:	0.0020 msec/call.
+four calls:	0.0028 msec/call.
+final call:	0.0019 msec/call.
+
+array:		0.0033 msec/call.
+list:		0.0247 msec/call.
+it:		0.0264 msec/call.
+newTask:	0.0313 msec/call.
+expTask:	0.0269 msec/call.
+UI Task:	0.0496 msec/call.
+UI newTask:	0.0233 msec/call.
+UI finalTask:	0.0293 msec/call.
+one call:	0.0027 msec/call.
+four calls:	0.0064 msec/call.
+final call:	0.0021 msec/call.
+
+Well, this was kind of a wake-up call for me. Here are the results:
+ - one step away from arrays and there is a at least 5 times increase in the overhead
+ - creating the [b]Task[/b] object once and reusing it gives very slight advantage
+ - using a [b]final[/b] modifier gives a consistent but still low gain.
+ - funny but true: calling a method more than once (4 times) is faster than calling it only once. The JIT compiler works in mysterious ways.. ;-)
+
+[b]Discussion:[b]
+The results are messy and it is not easy to see the relations between methods due to fluctuations. A subsequent post will clean the mess by extending the program to create MatLab scripts that allow plotting the mean and deviation of these values and of course allow you to run the experiment as many times you want. Moreover, it will demonstrate extensive use of the API I provided as the starting point of this discussion thread.
+
+----------------------------------------
+A report of a conclusive experiment
+----------------------------------------
+> Here's a program to measure the time profile of my
+> approach inspired by the posts by [i]smiths[/i]:
+> ...
+> However ugly the repetitions may look, I thought that
+> this is necessary for correctly measuring the time it
+> takes to call each function.
+
+It was very difficult to do anything more on that program. The repetitions are replaced by a general function which takes a function as a parameter in this new program. 
+
+You may ask how is that possible, did I use reflection for that? No, actually I still used the [i]Task[/b] class I introduced earlier. See the [i]testIt[/i] method.
+
+This program extends the program in the previous post and uses the same functions for measurement. The results from many runs of the experiments are collected in a custom hastable and then can be exported to MatLab with a script which is printed on the standard output.
+
+Here's the code: [code]
+import java.util.*;
+import edu.ull.cgunay.utils.*;
+
+// $Id$
+/**
+ * MeanLoops.java
+ *
+ *
+ * <p>Created: Wed May  8 21:16:45 2002
+ * <p>Modified: $Date$
+ *
+ * @author <a href="mailto:cengiz@ull.edu">Cengiz Gunay</a>
+ * @version $Revision$ for this file.
+ */
+
+public class MeanLoops extends Loops  {
+    final int TIMES = 10000;
+
+    /**
+     * Hashtable from <code>String</code>s to <code>Vector</code>s
+     * holding experiment result times.
+     *
+     */
+    class ProfileResults extends Hashtable {
+	public void addTime(String name, double time) {
+	    Vector v = (Vector)get(name);
+	    if (v == null) {
+		v = new Vector();
+		v.add(new Double(time));
+		put(name, v);		
+	    } else 
+		v.add(new Double(time));
+	}
+    }
+
+    ProfileResults results = new ProfileResults();
+
+    public MeanLoops () {
+	
+    }
+
+    void testIt(String name, Task task) {
+	try {
+	    long start = System.currentTimeMillis(), end;
+	    for (int i = 0; i < TIMES; i++) 
+		task.job(null); 
+	    double perCall = ((double)System.currentTimeMillis() - start)/TIMES;
+	    results.addTime(name, perCall);
+	} catch (TaskException e) {
+	    throw new Error("Not expected: " + e);
+	} // end of try-catch
+    }
+
+    void testOnce() {
+	final String[] array = {"1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1",
+				"1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1",
+				"1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1"};
+
+	testIt("Array index", new Task() {
+		final public void job(Object o) {
+		    loop1(array);
+		}
+	    });
+
+	final List list1 = new Vector(Arrays.asList(array));
+
+	testIt("List index", new Task() {
+		final public void job(Object o) {
+		    loop2(list1);
+		}
+	    });
+
+	final List list = new LinkedList(Arrays.asList(array));
+
+	testIt("Iterator", new Task() {
+		final public void job(Object o) {
+		    loop3(list);
+		}
+	    });
+
+	testIt("UI w/ new Task", new Task() {
+		final public void job(Object o) {
+		    loop4(list);
+		}
+	    });
+
+	testIt("expanded w/ canned Task", new Task() {
+		final public void job(Object o) {
+		    loop5(list);
+		}
+	    });
+
+	testIt("UI w/ canned Task", new Task() {
+		final public void job(Object o) {
+		    loop6(list);
+		}
+	    });
+
+	testIt("UI w/ new final Task", new Task() {
+		final public void job(Object o) {
+		    loop7(list);
+		}
+	    });
+
+	testIt("UI w/ canned final Task", new Task() {
+		final public void job(Object o) {
+		    loop8(list);
+		}
+	    });
+
+	testIt("UI on Array", new Task() {
+		final public void job(Object o) {
+		    loop9(array);
+		}
+	    });
+    }
+
+    public void test() {
+	for (int i = 0; i < 10; i++) {
+	    testOnce();	     
+	} // end of for (int i = 0; i < 10; i++)
+
+	System.out.println(results + "\n");
+
+	TaskWithReturn task = new TaskWithReturn() {
+		String matrix = "mat = [" , legend = "";
+		int count = 1;
+		boolean first = true;
+
+		final public void job(Object o) {
+		    Map.Entry e = (Map.Entry)o;
+		    String currentVector = "e" + count;
+		    matrix += (first ? "" : "; ") + e.getValue(); // The value is "[...]"
+		    legend += "text(" + count + ", a(" + count + "), '" + e.getKey() +
+			"', 'HorizontalAlignment', 'Center');\n";
+		    first = false;
+		    count++;
+		}
+
+		public Object getValue() {
+		    matrix += "];\n";
+		    return
+			"%% MatLab script automatically generated by MeanLoops.java\n" +
+			matrix +
+			"a = mean(mat, 2);\n" +
+			"s = std(mat,0,2);\n" +
+			"errorbar(a,s, '.');\n" +
+			legend;
+		}
+	    };
+
+	UninterruptedIteration.loop(results.entrySet(), task);
+
+	System.out.println((String)task.getValue());
+    }
+
+    public static void main (String[] args) {
+	new MeanLoops().test();
+    } // end of main ()
+    
+}// MeanLoops[/code]
+
+> [b]Method:[/b]
+using [i]Task[/i] allows using the exact same measurement code to collect results in a modular way, maybe similar to using C/C++ style macro functions (without the efficiency). See the method [i]testIt()[/i]. 
+
+Collected results are accumulated in [i]Vector-Hashtable[/i] so that mean and deviations can be calculated. The results are harvested again using the API, the [i]TaskWithReturn[/i] interface that defines an additional [i]getValue[/i] method that allows collecting information that had been accumulated in the object during iteration. See the [i]test()[/i] method.
+
+> [b]Initial Results:[/b]
+
+The results of the program is displayed when the hastable is sent to standard output, such as:
+{
+UI w/ canned final Task=[0.02, 0.0349, 0.0215, 0.0221, 0.0197, 0.0221, 0.0231, 0.0193, 0.0197, 0.0218], 
+UI w/ new Task=[0.0239, 0.02, 0.0193, 0.0245, 0.0196, 0.0197, 0.0217, 0.0218, 0.0197, 0.0196],
+Iterator=[0.0209, 0.0123, 0.0201, 0.0143, 0.0117, 0.0118, 0.0141, 0.0114, 0.0116, 0.0128], 
+List index=[0.0122, 0.0097, 0.0093, 0.0109, 0.0099, 0.01, 0.0112, 0.0122, 0.0103, 0.0098], 
+UI w/ new final Task=[0.0252, 0.0193, 0.0203, 0.0223, 0.0215, 0.0227, 0.02, 0.0204, 0.02, 0.0194], 
+UI on Array=[0.0105, 0.0199, 0.0081, 0.0111, 0.0084, 0.0105, 0.0086, 0.0092, 0.0079, 0.0087], 
+expanded w/ canned Task=[0.0234, 0.0405, 0.019, 0.0212, 0.0194, 0.0204, 0.0185, 0.0215, 0.0191, 0.0181], 
+UI w/ canned Task=[0.0392, 0.0589, 0.0237, 0.0236, 0.0197, 0.0229, 0.0188, 0.0233, 0.0195, 0.0204], 
+Array index=[0.0019, 0.0010, 0.0010, 0.0025, 9.0E-4, 9.0E-4, 9.0E-4, 9.0E-4, 9.0E-4, 9.0E-4]}
+
+This transcript contains the results of 10 runs of the test suite (manually edited, the output looks unreadable, I'm out of patience to improve the looks further).
+
+The real output of the program is in a format that I cannot include here but is available at:
+http://web.cacs.louisiana.edu/~cxg9789/javautils/test1.eps
+http://web.cacs.louisiana.edu/~cxg9789/javautils/test2.eps
+http://web.cacs.louisiana.edu/~cxg9789/javautils/test3.eps
+These show three suns with same settings. The new result is that my new addition to the API is working better than list index loop and bare iterator (w/o API calls). This new addition is labeled "UI on array" and uses the static [i]loop[/i] function in class [i]Iteration[/i] that takes an array as argument and uses a for loop (as suggested by [i]smiths[/i]). 
+
+There were some other interesting results of my expedition:
+http://web.cacs.louisiana.edu/~cxg9789/javautils/test4.eps
+which shows if I use a [i]Vector[/i] instance to get the iterators, the time goes sky-high. I never knew that the [i]Collection[/i] implementation would affect iterator performance. 
+So the final result plot:
+http://web.cacs.louisiana.edu/~cxg9789/javautils/test5.eps
+shows that if a LinkedList is used to get the iterator, then everything that works on iterators improve. On the other hand, a [i]Vector[/i] is used the list index loop operation in this plot and gives better results than using a [i]LinkedList[/i]. No wonder why. Linked lists are better for iterating and vectors (based on simple arrays) are better for indexed operation. 
+
+[b]Conclusions:[/b]
+I think that is the main result of my efforts is introduction of the loop that works simple arrays. So I hope, [i]smiths[/i] that you may now consider using my API in your programs.
+Another result is the performance change in using indexed operations versus iterators on different Collection implementations. One of my big projects are apparently in big trouble according to these results.
