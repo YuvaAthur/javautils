@@ -199,6 +199,17 @@ abstract public class Grapher  {
     abstract public PlotHandle superposedPlot(final String title, Collection plots,
 					      final PrintStream out);
 
+  abstract class Axis {
+    
+    abstract void addData(Data data);
+
+    abstract String getString();
+  }
+
+  abstract class Data {
+    abstract String body();
+  }
+
     // tools
 
     /**
