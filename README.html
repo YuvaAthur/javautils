@@ -289,16 +289,8 @@ Here's the code: [code]
 import java.util.*;
 import edu.ull.cgunay.utils.*;
 
-// $Id$
 /**
  * MeanLoops.java
- *
- *
- * <p>Created: Wed May  8 21:16:45 2002
- * <p>Modified: $Date$
- *
- * @author <a href="mailto:cengiz@ull.edu">Cengiz Gunay</a>
- * @version $Revision$ for this file.
  */
 
 public class MeanLoops extends Loops  {
@@ -448,13 +440,12 @@ public class MeanLoops extends Loops  {
     
 }// MeanLoops[/code]
 
-> [b]Method:[/b]
-using [i]Task[/i] allows using the exact same measurement code to collect results in a modular way, maybe similar to using C/C++ style macro functions (without the efficiency). See the method [i]testIt()[/i]. 
+[b]Method:[/b]
+Using [i]Task[/i] allows using the exact same measurement code to collect results in a modular way, maybe similar to using C/C++ style macro functions (without the efficiency). See the method [i]testIt()[/i]. 
 
-Collected results are accumulated in [i]Vector-Hashtable[/i] so that mean and deviations can be calculated. The results are harvested again using the API, the [i]TaskWithReturn[/i] interface that defines an additional [i]getValue[/i] method that allows collecting information that had been accumulated in the object during iteration. See the [i]test()[/i] method.
+Collected results are accumulated in [i]Vector-Hashtable[/i] so that mean and deviations can be calculated. The results are harvested again using my API, namely the [i]TaskWithReturn[/i] interface that defines an additional [i]getValue[/i] method that allows collecting the information accumulated in the object during iteration. See the [i]test()[/i] method.
 
-> [b]Initial Results:[/b]
-
+[b]Initial Results:[/b]
 The results of the program is displayed when the hastable is sent to standard output, such as:
 {
 UI w/ canned final Task=[0.02, 0.0349, 0.0215, 0.0221, 0.0197, 0.0221, 0.0231, 0.0193, 0.0197, 0.0218], 
@@ -467,21 +458,26 @@ expanded w/ canned Task=[0.0234, 0.0405, 0.019, 0.0212, 0.0194, 0.0204, 0.0185, 
 UI w/ canned Task=[0.0392, 0.0589, 0.0237, 0.0236, 0.0197, 0.0229, 0.0188, 0.0233, 0.0195, 0.0204], 
 Array index=[0.0019, 0.0010, 0.0010, 0.0025, 9.0E-4, 9.0E-4, 9.0E-4, 9.0E-4, 9.0E-4, 9.0E-4]}
 
-This transcript contains the results of 10 runs of the test suite (manually edited, the output looks unreadable, I'm out of patience to improve the looks further).
+This transcript contains the results of 10 runs of the test suite (manually edited otherwise the output looks unreadable and I'm out of patience to improve the looks further).
 
 The real output of the program is in a format that I cannot include here but is available at:
 http://web.cacs.louisiana.edu/~cxg9789/javautils/test1.eps
 http://web.cacs.louisiana.edu/~cxg9789/javautils/test2.eps
 http://web.cacs.louisiana.edu/~cxg9789/javautils/test3.eps
-These show three suns with same settings. The new result is that my new addition to the API is working better than list index loop and bare iterator (w/o API calls). This new addition is labeled "UI on array" and uses the static [i]loop[/i] function in class [i]Iteration[/i] that takes an array as argument and uses a for loop (as suggested by [i]smiths[/i]). 
+These show three runs with same settings as above. The new result is that my new addition to the API is working better than the list index loop and the bare iterator (w/o API calls). This new addition is labeled "UI on array" and uses the static [i]loop[/i] function in class [i]Iteration[/i] that takes an array as argument and uses a for loop (as suggested by [i]smiths[/i]). 
 
 There were some other interesting results of my expedition:
 http://web.cacs.louisiana.edu/~cxg9789/javautils/test4.eps
 which shows if I use a [i]Vector[/i] instance to get the iterators, the time goes sky-high. I never knew that the [i]Collection[/i] implementation would affect iterator performance. 
 So the final result plot:
 http://web.cacs.louisiana.edu/~cxg9789/javautils/test5.eps
-shows that if a LinkedList is used to get the iterator, then everything that works on iterators improve. On the other hand, a [i]Vector[/i] is used the list index loop operation in this plot and gives better results than using a [i]LinkedList[/i]. No wonder why. Linked lists are better for iterating and vectors (based on simple arrays) are better for indexed operation. 
+shows that if a [i]LinkedList[/i] is used to get the iterator, then everything that works on iterators improve. On the other hand, a [i]Vector[/i] is used  for the list index loop in this plot and gives better results than using a [i]LinkedList[/i]. No wonder why. Linked lists are better for iterating and vectors (based on simple arrays) are better for indexed operation. 
 
 [b]Conclusions:[/b]
-I think that is the main result of my efforts is introduction of the loop that works simple arrays. So I hope, [i]smiths[/i] that you may now consider using my API in your programs.
-Another result is the performance change in using indexed operations versus iterators on different Collection implementations. One of my big projects are apparently in big trouble according to these results.
+I think that is the main result of my efforts is introduction of the loop that works simple arrays. So I hope, [i]smiths[/i] that you may now consider using my API in your programs. The new versions can be obtained from my home page http://www.cacs.louisiana.edu/~cxg9789/
+
+Another result is the performance change when using indexed operations versus iterators on different [i]Collection[/i] implementations. One of my big projects is apparently in big trouble according to these results.
+
+In the program above I also used [i]Task[/i]s in places other than iterations. So you can see that the usage of the interface is not limited to iterations and actually opens new doors in better organizing programs. 
+
+I am still waiting for your valuable comments to mature this proposal. If we can improve it enough (and you guys like it), I can propose to open a Java Community Process for it. Thanks for your interest...
