@@ -1,4 +1,4 @@
-package neuroidnet.utils;
+package edu.ull.cgunay.utils;
 import java.io.*;
 
 // $Id$
@@ -9,7 +9,7 @@ import java.io.*;
  *
  * @author Cengiz Gunay
  * @version $Revision$ for this file
- * @see ntr.Neuroid.SynapseActivityTask
+ * @see StringTask
  */
 
 public interface TaskWithReturn extends Task {
