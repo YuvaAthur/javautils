@@ -37,7 +37,7 @@ public class MatLab extends Grapher {
 	// Define datatypes (TODO: )
 	new DefaultDataType();
 	new ImpulseDataType();
-	//new DataType("errorbar", "errorbar");
+	new ErrorDataType();
     }
     
     class DefaultDataType extends DataType { 
@@ -70,6 +70,25 @@ public class MatLab extends Grapher {
 	 */
 	public String plotCommand(Data data) {
 	    return axisCommand + paren( data.xExpression() + ", " + data.yExpression());
+	}
+	}
+
+    class ErrorDataType extends Grapher.DataType {
+	
+	ErrorDataType() {
+	    super("errorbar", "errorbar");
+	}
+
+	/**
+	 * TODO: Unify this with <code>DefaultDataType</code>.
+	 *
+	 * @param data a <code>Grapher.Data</code> value
+	 * @return a <code>String</code> value
+	 */
+	public String plotCommand(Data data) {
+	    return axisCommand + paren( data.xExpression() + ", " + data.yExpression() + ", " +
+					((ErrorData)data).minExpression() + ", " +
+					((ErrorData)data).maxExpression() );
 	}
 	}
 
@@ -170,11 +189,11 @@ public class MatLab extends Grapher {
 				Range range = (Range) entry.getValue();
 				super.job(assign((String) entry.getKey(),
 						 "[" + ((range!=null) ? range(range) : "")+ "]"));
-			    } else if (entry.getValue() instanceof Vector) {
-				Vector vector = (Vector) entry.getValue();
+			    } else if (entry.getValue() instanceof Collection) {
+				Collection vector = (Collection) entry.getValue();
 				super.job(assign((String) entry.getKey(),
 						 // make a matlab vector (TODO: generalize this)
-						 new StringTask("[", "]").getString(vector)));
+						 new StringTask("[", "]", ",").getString(vector)));
 			    } else {
 				new Error("Undefined type for variable " + entry.getKey() +
 					  " in dataset.");
@@ -412,6 +431,17 @@ public class MatLab extends Grapher {
 	} // end of try-catch
 	
 	return "";
+    }
+
+    /**
+     * Add a proper MatLab termination to the superior definition.
+     *
+     * @param var a <code>String</code> value
+     * @param value a <code>String</code> value
+     * @return a <code>String</code> value
+     */
+    public String assign(String var, String value) {
+	return super.assign(var, value) + ";\n";
     }
 
     /**

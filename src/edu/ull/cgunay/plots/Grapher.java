@@ -373,24 +373,6 @@ abstract public class Grapher  {
      */
     abstract class Data {
 	/**
-	 * Finds the <code>DataType</code> associated with requested
-	 * <code>dataTypeName</code>.
-	 *
-	 * @param dataTypeName a <code>String</code> value
-	 * @param label a <code>String</code> value
-	 */
-	public Data(String dataTypeName, String label) {
-	    this.label = label;
-	    setDataType(dataTypeName);
-	    init();
-	}
-
-	/**
-	 * Put initialization code in this method.
-	 */
-	void init() {}
-
-	/**
 	 * Variables used by this plot data definition. name->Range or
 	 * name->vector pairs.
 	 */
@@ -405,7 +387,27 @@ abstract public class Grapher  {
 	}
 
 	/**
-	 * Add a range variable to <code>variables</code>.
+	 * Finds the <code>DataType</code> associated with requested
+	 * <code>dataTypeName</code>.
+	 *
+	 * @param dataTypeName a <code>String</code> value
+	 * @param label a <code>String</code> value
+	 */
+	public Data(String dataTypeName, String label) {
+	    this.label = label;
+	    setDataType(dataTypeName);
+	    //init();
+	}
+
+	/**
+	 * Put initialization code in this method.
+	 */
+	void init() {}
+
+	/**
+	 * Add a range variable to <code>variables</code>. <p> TODO:
+	 * maybe just take the name ot the member variable and use
+	 * reflection to look it up? (like in catacomb)
 	 *
 	 * @param name a <code>String</code> value
 	 * @param range a <code>Range</code> value
@@ -419,10 +421,10 @@ abstract public class Grapher  {
 	 * Add a vector variable to <code>variables</code>.
 	 *
 	 * @param name a <code>String</code> value
-	 * @param range a <code>Range</code> value
+	 * @param vector a <code>Collection</code> value
 	 * @see #variables
 	 */
-	public void addVariable(String name, Vector vector) {
+	public void addVariable(String name, Collection vector) {
 	    variables.put(name, vector);
 	}
 
@@ -524,6 +526,30 @@ abstract public class Grapher  {
 	public String xExpression() {
 	    return variable("t");
 	}
+    }
+
+    /**
+     * For errorbar plots.
+     *
+     */
+    abstract class ErrorData extends Data {
+	public ErrorData(String label) {
+	    super("errorbar", label);
+	}
+
+	/**
+	 * Returns the lower limit expression for each data point.
+	 *
+	 * @return a <code>String</code> value
+	 */
+	abstract public String minExpression();
+
+	/**
+	 * Returns the upper limit expression for each data point.
+	 *
+	 * @return a <code>String</code> value
+	 */
+	abstract public String maxExpression();
     }
 
     // tools

@@ -64,16 +64,8 @@ public class SpikePlot extends Plot  {
     }
 
     /**
-     * Not applicable.
-     * <p>TODO: Should be '-' to be compliant with multiplot propositions.
-     * Need to define a vector(?) method to dump in the data instead of 
-     * treating <code>SpikePlot</code>s specially.
-     * @return a <code>String</code> value
-     */
-    public String body() { return null; }
-
-    /**
-     * 
+     * Creates a "impulse" type dataset for the spike plot and
+     * associates with a single axis.
      *
      * @param grapher a <code>Grapher</code> value
      * @return a <code>String</code> value
@@ -102,6 +94,8 @@ public class SpikePlot extends Plot  {
 		    return grapher.variable("ones"); 
 		}
 	    };
+
+	data.init();
 
 	Grapher.Axis axis = grapher.createAxis();
 	axis.addData(data);

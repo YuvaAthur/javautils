@@ -42,7 +42,7 @@ abstract public class Profilable extends Observable implements Cloneable, Serial
 
     /**
      * Return a representation if the entity as a <code>double</code> value.
-     * This is used for plotting the profile.
+     * This is used for plotting a primitive value's profile.
      * <p> For most entities conversion to such a simple
      * representation is not possible. In these cases calling this method
      * should result in a fatal error.

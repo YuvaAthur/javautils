@@ -9,9 +9,10 @@ import java.util.Observer;
 // $Id$
 // See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
- * Records the time profile of a <code>Profilable</code> entity that changes in time.
- * Saves pairs consisting of a time and an associated value for the entity (its clone).
- * The time is represented as a simple <code>double</code> value.
+ * Records the (time) profile of a variable <code>Profilable</code>
+ * entity.  Saves pairs consisting of a key (time) value and an
+ * associated value for the entity (its clone). The key consists of a
+ * simple <code>Double</code> value.
  *
  * <p>Created: Mon Apr  8 17:07:04 2002
  * <p>Modified: $Date$
@@ -20,6 +21,7 @@ import java.util.Observer;
  * @version $Revision$ for this file.
  * @see ProfilePlot
  * @see Profilable
+ * @see Grapher#profile
  */
 public class Profile extends TreeMap implements Observer, Serializable {
 

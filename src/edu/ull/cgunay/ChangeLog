@@ -1,3 +1,11 @@
+2002-11-13  Cengiz Gunay  <cengiz@ull.edu>
+
+	* utils/plots/ErrorValue.java (Repository): New profilable entity
+	for supporting errorbar plots.
+
+	* utils/plots/ErrorBarPlot.java (Repository): Errorbar plots now
+	available. Required major redesign leading to v2.0.
+
 2002-05-09  Cengiz Gunay  <cengiz@ull.edu>
 
 	* utils/plots/Grapher.java (Repository): Improved Grapher.profile() by making it
