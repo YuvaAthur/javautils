@@ -1038,5 +1038,14 @@ abstract public class Grapher  {
      * @param filename a <code>String</code> value
      */
     abstract public void writeEPS(PlotHandle handle, String filename);
+
+    /**
+     * Exports a black-n-white EPS file of the previously visualized
+     * (required) plot.
+     * <p>TODO: make some export properties to handle these.
+     * @param handle a <code>PlotHandle</code> value
+     * @param filename a <code>String</code> value
+     */
+    abstract public void writeEPSbw(PlotHandle handle, String filename);
     
 }// Grapher

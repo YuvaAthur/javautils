@@ -649,5 +649,12 @@ public class MatLab extends Grapher {
 	waitForResponse();
 	System.out.println(response());
     }
+
+    public void writeEPSbw(PlotHandle handle, String filename) {
+	out.println("print -deps2 -f" + handle.getWindowNumber()
+		    + " " + filename);
+	waitForResponse();
+	System.out.println(response());
+    }
     
     }// MatLab

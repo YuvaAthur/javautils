@@ -119,5 +119,15 @@ public class PlotHandle  {
     public void writeEPS(String filename) {
 	grapher.writeEPS(this, filename);
     }
+
+    /**
+     * Exports an black/white EPS file of the current plot with the
+     * grapher. Calls Grapher.writeEPSbw()
+     * @param filename a <code>String</code> value
+     * @see Grapher#writeEPS
+     */
+    public void writeEPSbw(String filename) {
+	grapher.writeEPSbw(this, filename);
+    }
     
 }// PlotHandle
