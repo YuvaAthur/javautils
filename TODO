@@ -1,5 +1,10 @@
-- add decorations
+- make Axes and a MultiAxesPlot that takes a list of axis to plot
 - move package plots out from under utils
+- implement everything for gnuplot, too
++ Make ErrorData and then a SingleDataPlot instead of ErrorBarPlot
++ add superposed plot
++ add decorations
+
 + added errorbar plots
 + Make a recipe function from Plot that commands the Grapher activity to create the graph
 	+ make a subclass of grapher to be instantiated from Plot using grapher caps (instead of body, preamble, etc.)
