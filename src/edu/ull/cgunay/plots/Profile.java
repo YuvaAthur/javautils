@@ -1,5 +1,5 @@
 
-package neuroidnet.ntr.plots;
+package edu.ull.cgunay.utils.plots;
 
 import java.io.*;
 import java.util.*;
@@ -8,28 +8,50 @@ import java.util.Observer;
 
 // $Id$
 /**
- * Keeps track of the time profile of an entity that changes through time.
- * Saves pairs consisting of a time and an  associated value
- * for the entity.
- * Currently saves a simple <code>double</code> value for each time instant.
+ * Records the time profile of a <code>Profilable</code> entity that changes in time.
+ * Saves pairs consisting of a time and an associated value for the entity (its clone).
+ * The time is represented as a simple <code>double</code> value.
  *
  * <p>Created: Mon Apr  8 17:07:04 2002
  * <p>Modified: $Date$
  *
- * @see Grapher;
  * @author <a href="mailto:">Cengiz Gunay</a>
  * @version $Revision$ for this file.
+ * @see ProfilePlot
+ * @see Profilable
  */
-
 public class Profile extends TreeMap implements Observer, Serializable {
+    /**
+     * Entity to be observed and recorded.
+     *
+     */
     Profilable entity;
 
+    /**
+     * Dummy constructor.
+     *
+     */
     public Profile () { }
 
+    /**
+     * Starts recording <code>entity</code> at given <code>time</code>.
+     * Calls <code>connectTo()</code>.
+     *
+     * @param entity to be observed and recorded
+     * @param time an <code>Double</code> value, used as hash key
+     * @see #connectTo
+     */
     public Profile (Profilable entity, Object time) {
 	connectTo(entity, time);
     }
 
+    /**
+     * Adds this object to the observer list of the entity and initializes the profile
+     * with given time-entity pair.
+     * 
+     * @param entity a <code>Profilable</code> value
+     * @param time an <code>Object</code> value
+     */
     public void connectTo(Profilable entity, Object time) {
 	this.entity = entity;
 	entity.addObserver(this);
@@ -38,9 +60,31 @@ public class Profile extends TreeMap implements Observer, Serializable {
 	update(entity, time);
     }
 
+    /**
+     * Returns an <code>Iterator</code> for the entity values recorded
+     * in the given <code>range</code>. If <code>range</code> is <code>null</code>
+     * the iterator is on all values of the entity contained in this <code>Profile</code>.
+     *
+     * @param range a <code>Range</code> value
+     * @return an <code>Iterator</code> value
+     * @see Grapher#profile
+     */
     public Iterator iterator(Range range) {
+	return collection(range).iterator();
+    }
+
+    /**
+     * Returns an <code>Collection</code> for the entity values recorded
+     * in the given <code>range</code>. If <code>range</code> is <code>null</code>
+     * the iterator is on all values of the entity contained in this <code>Profile</code>.
+     *
+     * @param range a <code>Range</code> value
+     * @return an <code>Iterator</code> value
+     * @see Grapher#profile
+     */
+    public Collection collection(Range range) {
 	if (range == null) 
-	    return entrySet().iterator();	// if range == null	     
+	    return entrySet();	// if range == null	     
 
 	SortedMap headMap = headMap(new Double(range.getStart() + 0.01));
 	Double
@@ -48,9 +92,15 @@ public class Profile extends TreeMap implements Observer, Serializable {
 	    start = (headMap != null) ? (Double)headMap.lastKey() : new Double(range.getStart() + 0.01);
 	
 	return
-	    subMap(start, end).entrySet().iterator();
+	    subMap(start, end).entrySet();
     }
 
+    /**
+     * Returns the maximum range of this profile, that is a range consisting of 
+     * the minimum and maximum time entries.
+     *
+     * @return a <code>Range</code> value
+     */
     public Range getRange() {
 	return new Range(((Double)firstKey()).doubleValue(), ((Double)lastKey()).doubleValue());
     }
