@@ -1,28 +1,70 @@
-package neuroidnet.utils;
+package edu.ull.cgunay.utils;
 
 import java.lang.*;
 import java.util.*;
 
 // $Id$
 /**
- * Various iteration utilities based on the Collections of JAVA 2 SDK.
- * This file contains many alternative methods to
- * essentially do the same thing. The collection on which to iterate can be chosen either at
- * the constructor or at the loop() function for the non-static use. This is left to the
+ * <p>Allows iterating on the <code>Collection</code>s of JAVA 2 SDK with a high level interface.
+ * In summary, a given <code>Task</code> is executed for all items
+ * in a given <code>Collection</code> when an appropriate
+ * <code>loop()</code> method is invoked. 
+ *
+ * <p>This scheme allows
+ * generalizing commonly used iterations in template classes.
+ * This is a vast improvement allowing object oriented
+ * control over the primitive looping constructs 
+ * <code>for</code> and <code>while</code>.
+ * 
+ * <p>This file contains alternative methods for iteration.
+ * The collection on which to iterate can be chosen either at
+ * the constructor or at the <code>loop()</code> function for the non-static use.
+ * It is left to the
  * user to decide if the class is made to iterate on a single collection or if it is rather
  * a generic iteration facility that can be applied to many collections at different times.
- * <p>On the other hand static methods allow iterating without requiring an instance of the class.
- * In this case, an instance of the <code>Task</code> class has to be provided in calls to the
- * loop function.
- * <p>TODO: Provide examples.
  *
+ * <p>On the other hand, static methods allow iterating without
+ * requiring an instance of this class. However, in this case an
+ * instance of the <code>Task</code> class has to be provided in calls to the
+ * <code>loop(Collection,Task)</code> method.
+ * See the examples below for details on use.
+ *
+ * <p><b>Note:</b> The <code>loop()</code> methods of this class throws
+ * <code>BreakOutOfIterationException</code> to enable the user to have control
+ * on the iteration. If this is undesired, the subclass <code>UninterruptedIteration</code>
+ * should be used instead.
+ *
+ * <p>Example of static use:
+ * <blockquote><pre>
+ * Iteration.loop(collection, new Task() {
+ *   public void job(Object o) {
+ *     // do something on o here
+ *   }
+ * });
+ * </pre></blockquote>
+ * <p>Example of non-static repeatedly use of same task on different collections:
+ * <blockquote><pre>
+ * new Iteration() {
+ *   public void job(Object o) {
+ *     // do something on o here
+ *   }
+ * }.loop(collection);
+ * </pre></blockquote>
+ * <p>Example of non-static repeatedly use of same task with same collection:
+ * <blockquote><pre>
+ * new Iteration(collection) {
+ *   public void job(Object o) {
+ *     // do something on o here
+ *   }
+ * }.loop();
+ * </pre></blockquote>
  * <p>Created: Sat Nov 25 04:18:32 2000
- * @see Collection
- * @see Iterator
  * @author Cengiz Gunay
  * @version $Revision$
+ * @see Collection
+ * @see Iterator
+ * @see Task
  */
-
 abstract public class Iteration implements Task {
     /**
      * Collection to be iterated on for non-static loop() function.
@@ -39,8 +81,8 @@ abstract public class Iteration implements Task {
 
     /**
      * Sets the collection to be iterated on (for the non-static <code>loop()</code>).
-     * @see #loop()
      * @param collection a <code>Collection</code> value
+     * @see #loop()
      */
     public Iteration (Collection collection) {
 	this.collection = collection;
@@ -48,30 +90,33 @@ abstract public class Iteration implements Task {
 
     /**
      * Iterates on collection set by the constructor.
+     * @exception BreakOutOfIterationException if received from given <code>Task</code> instance
      * @see #Iteration(Collection)
      */
-    public void loop() {
+    public void loop() throws BreakOutOfIterationException {
 	loop(collection, this);
     }
 
     /**
      * Iterates on <code>c</code> with the <code>Task</code> given in this class.
      * @param c a <code>Collection</code> value
+     * @exception BreakOutOfIterationException if received from given <code>Task</code> instance
      * @see Task
      * @see #loop()
      */
-    public void loop(Collection c) {
+    public void loop(Collection c) throws BreakOutOfIterationException {
 	loop(c, this);
     }
 
     /**
      * Loop for <code>Iterator</code> values calling <code>Task</code>.
      *
-     * @see Task#job
      * @param i an <code>Iterator</code> value
      * @param t a <code>Task</code> value
+     * @exception BreakOutOfIterationException if received from given <code>Task</code> instance
+     * @see Task#job
      */
-    public static void loop(Iterator i, Task t) {
+    public static void loop(Iterator i, Task t) throws BreakOutOfIterationException {
 	try {
 	    for (; i.hasNext() ;) {
 		try {
@@ -81,25 +126,34 @@ abstract public class Iteration implements Task {
 		} // end of try-catch
 	    } // end of for (; i.hasNext() ;)
 	} catch (BreakOutOfIterationException e) {
-	    // just return, iteration is terminated
-	} catch (IterationException e) {
+	    throw e;
+	} catch (TaskException e) {
 	    throw new RuntimeException("Not supposed to happen");
 	} // end of catch
 	
     }
 
-    public static void loop(Collection c, Task t) {
+    /**
+     * Convenience method with <code>Collection</code> parameter, calls another
+     * <code>loop()</code> method.
+     *
+     * @param c a <code>Collection</code> value
+     * @param t a <code>Task</code> value
+     * @exception BreakOutOfIterationException if received from given <code>Task</code> instance
+     * @see #loop(Iterator,Task)
+     */
+    public static void loop(Collection c, Task t) throws BreakOutOfIterationException {
 	loop(c.iterator(), t);
     }
 
-    /**
+    /*
      * Loop by sending values to inner class.
      * @deprecated use <code>final</code> modifiers to be able to send and
      * return values from inner classes.
      * @param i an <code>Iterator</code> value
      * @param t a <code>TaskWithParam</code> value
      * @param p an <code>Object[]</code> value
-     */
+    
     public static void loop(Iterator i, TaskWithParam t, Object[] p) {
 	try {
 	    for (; i.hasNext() ;) {
@@ -111,13 +165,13 @@ abstract public class Iteration implements Task {
 	    } // end of for (; i.hasNext() ;)
 	} catch (BreakOutOfIterationException e) {
 	    // just return, iteration is terminated
-	} catch (IterationException e) {
+	} catch (TaskException e) {
 	    throw new RuntimeException("Not supposed to happen");
 	} // end of try-catch
     }
 
-    public static void loop2(Collection c, TaskWithParam t, Object[] p) {
+    public static void loop(Collection c, TaskWithParam t, Object[] p) {
 	loop(c.iterator(), t, p);
     }
-
+*/
 }// utils
