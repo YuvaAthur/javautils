@@ -1,7 +1,7 @@
 
 package neuroidnet.ntr.plots;
 
-import java.util.Vector;
+import java.util.*;
 
 // $Id$
 /**
@@ -44,11 +44,15 @@ public class SpikePlot extends Plot  {
 
 	this.spikes = spikes;
 
-	// if not specified, take the max range
-	if (range == null) {
-	    this.range = new Range(((Double)spikes.firstElement()).doubleValue(),
-				   ((Double)spikes.lastElement()).doubleValue());
-	} // end of if (range == null)
+	try {
+	    // if not specified, take the max range
+	    if (range == null) 
+		this.range = new Range(((Double)spikes.firstElement()).doubleValue(),
+				       ((Double)spikes.lastElement()).doubleValue());
+
+	} catch (NoSuchElementException e) {
+	    // do nothing, keep null range
+	} // end of try-catch
 	
     }
 
