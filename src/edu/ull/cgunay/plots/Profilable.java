@@ -16,7 +16,7 @@ import java.lang.*;
  * @version $Revision$ for this file.
  */
 
-public class Profilable extends Observable implements Cloneable  {
+abstract public class Profilable extends Observable implements Cloneable  {
     public Profilable () {	
     }
 
@@ -27,5 +27,6 @@ public class Profilable extends Observable implements Cloneable  {
 	    throw new Error("This shouldn't happen!");
 	} // end of try-catch
     }
-    
+
+    abstract public double doubleValue();
 }// Profilable
