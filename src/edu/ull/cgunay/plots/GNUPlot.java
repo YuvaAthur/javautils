@@ -21,26 +21,11 @@ import java.io.*;
 public class GNUPlot extends Grapher {
 
     /**
-     * The runtime process of the spawned <code>gnuplot</code> program.
-     *
-     */
-    Process gnuplotProc;
-
-    /**
      * Creates a new <code>GNUPlot</code> instance.
      * @exception GrapherNotAvailableException if the cannot instantiate the grapher process
      */
     public GNUPlot () throws GrapherNotAvailableException {	
-	try {
-	    gnuplotProc = Runtime.getRuntime().exec("gnuplot -display :0 -");	    
-
-	    grapherOut = new PrintWriter(gnuplotProc.getOutputStream());
-	    grapherMsg = new BufferedReader(new InputStreamReader(gnuplotProc.getInputStream()));
-	    grapherErr = new BufferedReader(new InputStreamReader(gnuplotProc.getErrorStream()));
-
-	} catch (IOException e) {
-	    throw new GrapherNotAvailableException("" + e);	    
-	} // end of try-catch
+	super("gnuplot -display :0 -");
     }
 
     // overriding methods from neuroidnet.ntr.plots.Grapher 
@@ -50,19 +35,14 @@ public class GNUPlot extends Grapher {
     public String plot(final SpikePlot plot) {
 	String retval = "plot [" + assign("x", range(plot.getRange())) + "] '-' with impulses\n";
 
-	TaskWithReturn stringTask = new TaskWithReturn() {
-		String retval = "";
+	TaskWithReturn stringTask = new StringTask() {
+		Range range = plot.getRange();
 
 		public void job(Object o) {
 		    double time = ((Double)o).doubleValue();
-		    Range range = plot.getRange();
 		    if (time > range.getStart() && time <= range.getEnd()) {
-			retval += time + " 1\n";			
+			super.job(time + " 1\n"); 
 		    } // end of if 
-		}
-
-		public Object getValue() {
-		    return retval;
 		}
 	    };
 
@@ -79,6 +59,11 @@ public class GNUPlot extends Grapher {
      */
     public String def_func(String name, String[] params, String body) {
 	return func(name, params) + "=" + body + "\n";
+    }
+
+    public void close() {
+	grapherOut.println("exit");
+	grapherOut.flush();
     }
 
     }// GNUPlot
