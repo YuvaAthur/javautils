@@ -9,17 +9,51 @@ import neuroidnet.ntr.plots.Plot;
 /**
  * Grapher independent description for plots.
  *
- * @see Grapher
  * <p>Created: Mon Apr  8 17:35:11 2002
  * <p>Modified: $Date$
  *
+ * @see Grapher
  * @author <a href="mailto:">Cengiz Gunay</a>
  * @version $Revision$ for this file.
  */
 
 abstract public class Plot  {
+
     Grapher grapher;
+    
+    /**
+     * Get the value of grapher.
+     * @return value of grapher.
+     */
+    public Grapher getGrapher() {
+	return grapher;
+    }
+    
+    /**
+     * Set the value of grapher.
+     * @param v  Value to assign to grapher.
+     */
+    public void setGrapher(Grapher  v) {
+	this.grapher = v;
+    }    
+
     String title;
+    
+    /**
+     * Get the value of title.
+     * @return value of title.
+     */
+    public String getTitle() {
+	return title;
+    }
+    
+    /**
+     * Set the value of title.
+     * @param v  Value to assign to title.
+     */
+    public void setTitle(String  v) {
+	this.title = v;
+    }
 
     /**
      * <code>Range</code> of the plot.
