@@ -3,4 +3,5 @@ javadoc -sourcepath src/ \
 	-private -version -author -use \
 	-windowtitle "CGunay's General Java Utils" \
 	-link "http://java.sun.com/j2se/1.3/docs/api" \
+	-breakiterator \
 	edu.ull.cgunay.utils edu.ull.cgunay.plots

@@ -19,7 +19,7 @@ import java.util.*;
  * @see Comparable
  */
 
-public class ComparableSortedSet extends TreeSet  {
+public class ComparableSortedSet extends TreeSet implements Comparable {
     public ComparableSortedSet () {
 	super();
     }
