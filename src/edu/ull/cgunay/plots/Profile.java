@@ -24,6 +24,8 @@ import java.util.Observer;
 public class Profile extends TreeMap implements Observer, Serializable {
     Profilable entity;
 
+    public Profile () { }
+
     public Profile (Profilable entity, Object time) {
 	connectTo(entity, time);
     }
@@ -37,8 +39,18 @@ public class Profile extends TreeMap implements Observer, Serializable {
     }
 
     public Iterator iterator(Range range) {
-	return
-	    subMap(new Double(range.getStart()), new Double(range.getEnd())).values().iterator();
+	try {
+	    return
+		subMap(headMap(new Double(range.getStart() + 0.01)).lastKey(),
+		       new Double(range.getEnd() + 0.01)).entrySet().iterator();
+	} catch (NullPointerException e) {
+	    return entrySet().iterator();	// if range == null
+	} // end of try-catch
+	
+    }
+
+    public Range getRange() {
+	return new Range(((Double)firstKey()).doubleValue(), ((Double)lastKey()).doubleValue());
     }
 
     // implementation of java.util.Observer interface
