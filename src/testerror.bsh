@@ -1,15 +1,31 @@
 import edu.ull.cgunay.utils.plots.*;
 
 prof = new Profile();
-
 prof.put(new Double(1), new ErrorValue(2,1,4));
 prof.put(new Double(2), new ErrorValue(8,7,9));
 prof.put(new Double(3), new ErrorValue(1,1,3));
 prof.put(new Double(4), new ErrorValue(3,1,4));
 
-p = new ErrorBarPlot("helloooooo", null, prof);
+prof2 = new Profile();
+prof2.put(new Double(1), new ErrorValue(1,1,3));
+prof2.put(new Double(2), new ErrorValue(2,1,4));
+prof2.put(new Double(3), new ErrorValue(8,7,9));
+prof2.put(new Double(4), new ErrorValue(3,1,4));
 
-if (g == null)
+// We need the grapher first
+if (g == null || g == void)
     g = new MatLab();
+
+d = new Grapher.ErrorData(g, "helloooooo data", prof);
+d2 = new Grapher.ErrorData(g, "loooo data", prof2);
+//p = new ErrorBarPlot("helloooooo data", null, prof);
+
+Grapher.Data[] datas = {d, d2};
+
+p = new SuperposedDataPlot(null, datas);
+p.setTitle("An important chart");
+p.setXLabel("Lifetime");
+p.setYLabel("Insanity");
+
 
 g.display(p, null);
