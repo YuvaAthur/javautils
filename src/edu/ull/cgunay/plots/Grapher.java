@@ -24,15 +24,41 @@ import java.util.*;
 abstract public class Grapher  {
 
     /**
-     * The output stream that is connected to the grapher.
+     * The runtime process of the spawned grapher program.
+     * @see GNUPlot
+     * @see MatLab
+     */
+    Process process;
+
+    /**
+     * The output stream that is connected to the grapher process.
      *
      */
-    PrintWriter grapherOut;
+    public PrintWriter grapherOut;
 
     /**
      * Output streams of the grapher process.
      */
     BufferedReader grapherMsg, grapherErr;
+
+    /**
+     * Spawns a grapher process (used from subclasses).
+     *
+     * @param processName the string to be executed
+     * @exception GrapherNotAvailableException cannot connect process or streams
+     */
+    Grapher(String processName) throws GrapherNotAvailableException {
+	try {
+	    process = Runtime.getRuntime().exec(processName); 
+
+	    grapherOut = new PrintWriter(process.getOutputStream());
+	    grapherMsg = new BufferedReader(new InputStreamReader(process.getInputStream()));
+	    grapherErr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+	} catch (IOException e) {
+	    throw new GrapherNotAvailableException("" + e);	    
+	} // end of try-catch
+    }
 
     /**
      * Returns a string representation of a <code>Profile</code> for
@@ -206,12 +232,25 @@ abstract public class Grapher  {
      * @param grapherStr a <code>String</code> value
      */
     public String display(Plot plot) throws GrapherNotAvailableException {
+	try {
+	    grapherOut.println(plot.plot(this));
+	    grapherOut.flush();
+	} catch (NullPointerException e) {
+	    throw new GrapherNotAvailableException();
+	} 
+	
+	return response();
+    }
+
+    /**
+     * Returns the standard and error outputs of the process if available.
+     *
+     * @return a <code>String</code> value
+     */
+    public String response() throws GrapherNotAvailableException {
 	String retval = "";
 
 	try {
-	    grapherOut.println(plot.plot());
-	    grapherOut.flush();
-
 	    // Display error and output 
 	    retval += "Standard output from the grapher:\n";
 	    while (grapherMsg.ready()) {
@@ -221,16 +260,20 @@ abstract public class Grapher  {
 	    retval += "\nStandard error from the grapher:\n";
 	    while (grapherErr.ready()) {
 		retval += (char)grapherErr.read();
-	    } // end of while (grapherErr.ready())
-	     
-	} catch (NullPointerException e) {
-	    throw new GrapherNotAvailableException();
+	    } // end of while (grapherErr.ready())	     
 	} catch (IOException e) {
-	    throw new GrapherNotAvailableException("" + e);	     
-	} // end of catch
-
+	    throw new GrapherNotAvailableException("" + e); 
+	} // end of try-catch
 	
 	return retval;
+    }
+
+    /**
+     * Kills the grapher process.
+     *
+     */
+    public void close() {
+	process.destroy();
     }
     
 }// Grapher
