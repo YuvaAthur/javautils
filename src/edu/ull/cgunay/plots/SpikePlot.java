@@ -4,6 +4,7 @@ package edu.ull.cgunay.utils.plots;
 import java.util.*;
 
 // $Id$
+// See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
  * Plot of a collection of spike timings.
  *
@@ -15,7 +16,7 @@ import java.util.*;
  * @version $Revision$ for this file.
  */
 
-public class SpikePlot extends Plot  {
+public class SpikePlot extends SimplePlot  {
 
     /**
      * Values of the spikes to be plotted.

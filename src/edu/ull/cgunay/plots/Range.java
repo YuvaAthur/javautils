@@ -2,6 +2,7 @@
 package edu.ull.cgunay.utils.plots;
 
 // $Id$
+// See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
  * Holds the pair of <code>double</code>s indicating a range of a variable.
  *

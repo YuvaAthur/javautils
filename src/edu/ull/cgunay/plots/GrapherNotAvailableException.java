@@ -2,6 +2,7 @@
 package edu.ull.cgunay.utils.plots;
 
 // $Id$
+// See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
  *
  * <p>Created: Thu Apr 11 13:50:11 2002

@@ -7,6 +7,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 // $Id$
+// See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
  * Records the time profile of a <code>Profilable</code> entity that changes in time.
  * Saves pairs consisting of a time and an associated value for the entity (its clone).

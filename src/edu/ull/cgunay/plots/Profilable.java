@@ -6,6 +6,7 @@ import java.io.*;
 import java.lang.*;
 
 // $Id$
+// See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
  * An entity whose contents can be recorded in a <code>Profile</code>. Allows to be
  * both <code>Observable</code> and <code>Cloneable</code>.

@@ -5,6 +5,7 @@ import java.io.*;
 import java.util.*;
 
 // $Id$
+// See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
  * Encapsulation of a <code>double</code> value as a <code>Profilable</code> entity.
  *
@@ -13,6 +14,7 @@ import java.util.*;
  *
  * @author <a href="mailto:">Cengiz Gunay</a>
  * @version $Revision$ for this file.
+ * @see Profilable
  */
 
 public class ProfilableDouble extends Profilable implements Serializable, Comparable {

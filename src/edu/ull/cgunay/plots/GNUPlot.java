@@ -7,6 +7,7 @@ import java.io.*;
 import java.util.*;
 
 // $Id$
+// See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
  * <code>Grapher</code> implementation for plotting with the
  * <code>gnuplot</code> program.
@@ -16,7 +17,7 @@ import java.util.*;
  * <p>Created: Mon Apr  8 17:53:58 2002
  * <p>Modified: $Date$
  *
- * @author <a href="mailto:">Cengiz Gunay</a>
+ * @author <a href="mailto:cengiz@ull.edu">Cengiz Gunay</a>
  * @version $Revision$ for this file.
  * @see Grapher
  */

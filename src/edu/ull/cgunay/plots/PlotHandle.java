@@ -5,6 +5,7 @@ import java.util.*;
 import edu.ull.cgunay.utils.*;
 
 // $Id$
+// See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
  * Entity that associates a plot and a grapher at display time. This is the handle
  * that represents the visual representation of the plot. It contains pointers to the plot,
@@ -69,7 +70,8 @@ public class PlotHandle  {
     }
 
     /**
-     * Association of a plot with the grapher.
+     * Association of a plot with the grapher. Sets the
+     * <code>grapher</code> property of the <code>plot</code>.
      *
      * @param plot a <code>Plot</code> value
      * @param grapher a <code>Grapher</code> value
@@ -84,7 +86,9 @@ public class PlotHandle  {
     }
 
     /**
-     * Association of a plot group with the grapher.
+     * Association of a plot group with the grapher. Sets the
+     * <code>grapher</code> property of each of the
+     * <code>plots</code>.
      *
      * @param plots a <code>Collection</code> value
      * @param grapher a <code>Grapher</code> value
