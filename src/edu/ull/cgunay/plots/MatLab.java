@@ -4,6 +4,7 @@ package neuroidnet.ntr.plots;
 import neuroidnet.utils.*;
 
 import java.io.*;
+import java.util.*;
 
 // $Id$
 /**
@@ -40,11 +41,32 @@ public class MatLab extends Grapher  {
 
 	return 
 	    assign("t", (String)stringTask.getValue()) + ";\n" +
-	    "plot(t, ones(size(t,2)), 'filled');\n";
+	    "stem(t, ones(size(t,2)), 'filled');\n" +
+	    "legend('" + getTitle(plot) + "');\n";
+
     }
 
     public String plot(Plot plot) {
-	return "plot (" + range(plot.getRange()) + ", " + plot.body() + ");\n";
+
+	return
+	    assign("t", range(plot.getRange())) + ";\n" +
+	    "plot (t, " + plot.body() + ");\n" +
+	    "legend('" + getTitle(plot) + "');\n";
+    }
+
+    String getTitle(Plot plot) {
+	String title = plot.getTitle();
+	return (title != null) ? title : "";
+    }
+
+    public String multiPlot(String title, Collection plots) {
+	// set title
+	// go into multiplot mode
+	// count number of plots, -> divide view into subplots
+	// find maximum range by iterating on all plots
+	// iterate on each plot and plot them with size prefix
+	// leave multiplot mode
+	return null;
     }
 
     /**
@@ -53,6 +75,11 @@ public class MatLab extends Grapher  {
 	return
 	    "function r = " + func(name, params) + "\n" +
 	    "r = " + body + "\n";
+    }
+
+    public String range(Range range) {
+	double start = range.getStart(), end = range.getEnd();
+	return start + ":" + (end - start) / points  + ":" + end;
     }
 
     public void close() {

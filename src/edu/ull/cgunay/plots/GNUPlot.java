@@ -4,6 +4,7 @@ package neuroidnet.ntr.plots;
 import neuroidnet.utils.*;
 
 import java.io.*;
+import java.util.*;
 
 // $Id$
 /**
@@ -33,7 +34,9 @@ public class GNUPlot extends Grapher {
     /**
      */
     public String plot(final SpikePlot plot) {
-	String retval = "plot [" + assign("x", range(plot.getRange())) + "] '-' with impulses\n";
+	String retval =
+	    "plot [" + assign("x", range(plot.getRange())) + "] " +
+	    "'-'" + getTitle(plot) + " with impulses" + "\n";
 
 	TaskWithReturn stringTask = new StringTask() {
 		Range range = plot.getRange();
@@ -52,9 +55,28 @@ public class GNUPlot extends Grapher {
     }
 
     public String plot(Plot plot) {
-	return "plot [" + assign("t", range(plot.getRange())) + "] " + plot.body() + "\n";
+
+	Range range = plot.getRange();
+	return
+	    "plot " + ((range!=null) ? "[" + assign("t", range(range)) + "] " : "") +
+	    plot.body() + getTitle(plot) + "\n";
     }
 
+    String getTitle(Plot plot) {
+	String title = plot.getTitle();
+	return (title != null) ? " title \"" + title + "\"" : "";
+    }
+
+    public String multiPlot(String title, Collection plots) {
+	// set title
+	// go into multiplot mode
+	// count number of plots, -> divide view into subplots
+	// find maximum range by iterating on all plots
+	// iterate on each plot and plot them with size prefix
+	// leave multiplot mode
+	return null;
+    }
+    
     /**
      */
     public String def_func(String name, String[] params, String body) {
