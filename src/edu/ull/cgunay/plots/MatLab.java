@@ -1,21 +1,23 @@
 
-package neuroidnet.ntr.plots;
+package edu.ull.cgunay.utils.plots;
 
-import neuroidnet.utils.*;
+import edu.ull.cgunay.utils.*;
 
 import java.io.*;
 import java.util.*;
 
 // $Id$
 /**
- * MatLab.java
- *
+ * <code>Grapher</code> implementation for plotting with the
+ * <code>MatLab</code> program.
+ * <p>See description in <code>Grapher</code> for the usage.
  *
  * <p>Created: Fri Apr 12 22:18:46 2002
  * <p>Modified: $Date$
  *
  * @author <a href="mailto:">Cengiz Gunay</a>
  * @version $Revision$ for this file.
+ * @see Grapher
  */
 
 public class MatLab extends Grapher  {
@@ -26,8 +28,10 @@ public class MatLab extends Grapher  {
     /**
      */
     public String plot(final SpikePlot plot) {
-	// converts the given array into matlab style array string (should be made a function)
-	TaskWithReturn stringTask = new StringTask("[ ", " ]") {
+	// First converts the given array into matlab style array string
+	// (should be made a function)
+	return 
+	    assign("t", new StringTask("[ ", " ]") {
 		Range range = plot.getRange();
 
 		public void job(Object o) {
@@ -35,12 +39,7 @@ public class MatLab extends Grapher  {
 		    if (time >= range.getStart() && time <= range.getEnd()) 
 			super.job(time + " "); // gets added to retval
 		}
-	    };
-
-	Iteration.loop(plot.getSpikes(), stringTask);
-
-	return 
-	    assign("t", (String)stringTask.getValue()) + ";\n" +
+	    }.getString(plot.getSpikes())) + ";\n" +
 	    "stem(t, ones(size(t,2)), 'filled');\n" +
 	    "legend('" + getTitle(plot) + "');\n";
 
@@ -68,6 +67,13 @@ public class MatLab extends Grapher  {
 	return (title != null) ? title : "";
     }
 
+    /**
+     * Not implemented yet!
+     *
+     * @param title a <code>String</code> value
+     * @param plots a <code>Collection</code> value
+     * @return a <code>String</code> value
+     */
     public String multiPlot(String title, Collection plots) {
 	// set title
 	// go into multiplot mode
@@ -92,7 +98,7 @@ public class MatLab extends Grapher  {
     }
 
     /**
-     * Creates a file in the current directory named with the function.
+     * Creates a file in the current directory named with the function for matlab.
      */
     public String def_func(String name, String[] params, String body) {
 	try {
@@ -108,16 +114,31 @@ public class MatLab extends Grapher  {
 	return "";
     }
 
+    /**
+     * Returns range in the matlab format "a:(b-a)/points:b"
+     *
+     * @param range a <code>Range</code> value
+     * @return a <code>String</code> value
+     */
     public String range(Range range) {
 	double start = range.getStart(), end = range.getEnd();
 	return start + ":" + (end - start) / points  + ":" + end;
     }
 
+    /**
+     * Exits matlab process.
+     *
+     */
     public void close() {
 	grapherOut.println("exit");
 	grapherOut.flush();
     }
 
+    /**
+     * Opens new matlab figure.
+     *
+     * @param windowNumber an <code>int</code> value
+     */
     public void setWindow(int windowNumber) {
 	grapherOut.println("figure;"); // Opens a new figure
     }
