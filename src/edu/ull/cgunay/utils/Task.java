@@ -1,4 +1,4 @@
-package neuroidnet.Utils;
+package neuroidnet.utils;
 
 import java.io.*;
 /**
@@ -11,7 +11,7 @@ import java.io.*;
 public interface Task extends Serializable {
     /**
      * Method to be called by external task givers.
-     * @see Utils#loop
+     * @see Iteration#loop
      * @param o the iterating value
      */
     void job(Object o);

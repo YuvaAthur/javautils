@@ -1,4 +1,4 @@
-package neuroidnet.Utils;
+package neuroidnet.utils;
 import java.io.*;
 
 // $Id$

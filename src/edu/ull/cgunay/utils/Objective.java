@@ -1,4 +1,4 @@
-package neuroidnet.Utils;
+package neuroidnet.utils;
 public class Objective implements Runnable {
     Object o;
     ParallelTask lock;

@@ -1,16 +1,16 @@
-package neuroidnet.Utils;
+package neuroidnet.utils;
 
 import java.lang.*;
 import java.util.*;
 
+// $Id$
 /**
- * Utils.java
  * Various Java utilities mainly for iteration.
  *
- * Created: Sat Nov 25 04:18:32 2000
+ * <p>Created: Sat Nov 25 04:18:32 2000
  *
  * @author Cengiz Gunay
- * @version
+ * @version $Revision$
  */
 
 public class Iteration  {
@@ -45,4 +45,4 @@ public class Iteration  {
 	loop(c.iterator(), t, p);
     }
 
-}// Utils
+}// utils

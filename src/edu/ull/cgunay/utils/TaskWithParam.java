@@ -1,4 +1,4 @@
-package neuroidnet.Utils;
+package neuroidnet.utils;
 import java.io.*;
 
 /**
@@ -14,7 +14,7 @@ public interface TaskWithParam extends Serializable {
      * Method to be called by external task givers.
      * @see Iteration#loop
      * @param o the iterating value
-     * @param p an <code>Object</code> value determined by the call to Utils.loop 
+     * @param p an <code>Object</code> value determined by the call to Iteration.loop 
      */
     void job(Object o, Object[] p);
 }
