@@ -4,6 +4,7 @@ package edu.ull.cgunay.utils;
 import java.util.*;
 
 // $Id$
+// See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
  * Loop until a break without complaining. That is, terminate the loop if a
  * <code>BreakOutOfIterationException</code> occurs without letting the caller know.

@@ -1,0 +1,13 @@
+LICENCE AND DISCLAIMER INFORMATION FOR SOFTWARE FOUND IN THIS DIRECTORY
+-----------------------------------------------------------------------
+
+This software is copyrighted jointly by the author and the University
+of Louisiana at Lafayette. However the owners do not hold any
+responsibility on the suitability of the software to any particular
+use. The owners cannot be held liable to any damage caused by this
+software. The software provided "as is" without any warranties.
+
+The users are free to modify and distribute the software as long as
+the original author and copyright information is retained in the
+source code. Please notify the author of your modifications by sending
+a copy to cengiz@ull.edu or cengique@yahoo.com

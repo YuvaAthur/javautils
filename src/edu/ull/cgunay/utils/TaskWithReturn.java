@@ -2,6 +2,7 @@ package edu.ull.cgunay.utils;
 import java.io.*;
 
 // $Id$
+// See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
  * Contains additional method for returning an intermediate value from task.
  *

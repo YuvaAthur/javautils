@@ -4,6 +4,7 @@ package edu.ull.cgunay.utils;
 import java.io.*;
 
 // $Id$
+// See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
  * A general steppable simulation abstraction.
  * <p>TODO: Shouldn't it be an interface?

@@ -2,6 +2,7 @@
 package edu.ull.cgunay.utils;
 
 // $Id$
+// See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
  * Thrown in iterators when the iteration needs to be terminated.
  *

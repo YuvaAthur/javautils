@@ -4,6 +4,7 @@ import edu.ull.cgunay.utils.Task;
 import edu.ull.cgunay.utils.TaskWithReturn;
 import java.util.Collection;
 // $Id$
+// See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
  * Iteration task that accumulates a <code>String</code> value. Constructors allow
  * optionally starting and ending <code>String</code>s  to wrap the

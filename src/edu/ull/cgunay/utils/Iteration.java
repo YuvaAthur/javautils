@@ -4,6 +4,7 @@ import java.lang.*;
 import java.util.*;
 
 // $Id$
+// See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
  * <p>Allows iterating on the <code>Collection</code>s of JAVA 2 SDK with a high level interface.
  * In summary, a given <code>Task</code> is executed for all items

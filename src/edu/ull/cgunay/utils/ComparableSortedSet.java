@@ -4,6 +4,7 @@ package edu.ull.cgunay.utils;
 import java.util.*;
 
 // $Id$
+// See licensing information at http://www.cacs.louisiana.edu/~cxg9789/LICENSE.txt
 /**
  * Allows comparing instances of these sets according to alphabetical
  * comparison technique, assuming elements implement the
